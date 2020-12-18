@@ -14,7 +14,8 @@ import (
 )
 
 var (
-	testServerPort = 8081
+	testServerPort                  = 8081
+	conn           *grpc.ClientConn = nil
 )
 
 func TestMain(m *testing.M) {
@@ -25,15 +26,15 @@ func TestMain(m *testing.M) {
 	grpcServer := NewServer()
 	go grpcServer.Serve(listener)
 	defer grpcServer.Stop()
-	os.Exit(m.Run())
-}
-
-func TestJoinPublicMatch(t *testing.T) {
-	conn, err := grpc.Dial("localhost:8081", grpc.WithInsecure())
+	conn, err = grpc.Dial("localhost:8081", grpc.WithInsecure())
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer conn.Close()
+	os.Exit(m.Run())
+}
+
+func TestJoinPublicMatch(t *testing.T) {
 
 	client := pb.NewNorthPoleClient(conn)
 	userInfo := &pb.UserInfo{Name: "Francis", Id: "83e38929-e746-3d31-9c21-49a180de2448"}
@@ -54,11 +55,6 @@ func TestJoinPublicMatch(t *testing.T) {
 }
 
 func TestJoinPrivateMatch(t *testing.T) {
-	conn, err := grpc.Dial("localhost:8081", grpc.WithInsecure())
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer conn.Close()
 
 	client := pb.NewNorthPoleClient(conn)
 	userInfo := &pb.UserInfo{Name: "Francis", Id: "b4e21a50-9b55-3ecf-88e4-7342a8c4e8a5"}
@@ -79,11 +75,6 @@ func TestJoinPrivateMatch(t *testing.T) {
 }
 
 func TestLeaveMatch(t *testing.T) {
-	conn, err := grpc.Dial("localhost:8081", grpc.WithInsecure())
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer conn.Close()
 
 	client := pb.NewNorthPoleClient(conn)
 	matchIdAndUserId := &pb.MatchIDAndUserID{
