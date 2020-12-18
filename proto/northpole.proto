@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package = "github.com/k-jun/grpc";
+
+// https://developers.google.com/protocol-buffers/docs/proto3
+// package northpole;
+
+service NorthPole {
+  rpc JoinPublicMatch(UserInfo) returns (stream MatchInfo) {}
+  rpc JoinPrivateMatch(UserInfo) returns (stream MatchInfo) {}
+  rpc LeaveMatch(MatchIDAndUserID) returns (MatchInfo) {}
+}
+
+message UserInfo {
+  string id = 1;
+  string name = 2;
+}
+
+message MatchInfo {
+  string id = 1;
+  string status = 2;
+  int32 current_number_of_player = 3;
+  int32 max_number_of_player = 4;
+}
+
+message MatchIDAndUserID {
+  string match_id = 1;
+  string user_id = 2;
+}
