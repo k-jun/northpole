@@ -6,6 +6,10 @@
 # mac
 brew install protobuf
 go get -u github.com/golang/protobuf/protoc-gen-go
+
+# document generate
+go get -u github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
+protoc --doc_out=html,index.html:./ proto/*.proto
 ```
 
 ## build 

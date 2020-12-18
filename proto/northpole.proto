@@ -11,6 +11,11 @@ service NorthPole {
   rpc LeaveMatch(MatchIDAndUserID) returns (MatchInfo) {}
 }
 
+enum MatchStatus {
+  Waiting = 0;
+  Start = 1;
+}
+
 message UserInfo {
   string id = 1;
   string name = 2;
@@ -18,7 +23,7 @@ message UserInfo {
 
 message MatchInfo {
   string id = 1;
-  string status = 2;
+  MatchStatus status = 2;
   int64 current_number_of_player = 3;
   int64 max_number_of_player = 4;
 }
