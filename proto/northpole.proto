@@ -19,8 +19,8 @@ message UserInfo {
 message MatchInfo {
   string id = 1;
   string status = 2;
-  int32 current_number_of_player = 3;
-  int32 max_number_of_player = 4;
+  int64 current_number_of_player = 3;
+  int64 max_number_of_player = 4;
 }
 
 message MatchIDAndUserID {
