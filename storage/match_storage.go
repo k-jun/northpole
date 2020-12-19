@@ -9,8 +9,8 @@ import (
 )
 
 type MatchStorage interface {
-	Find(id uuid.UUID) match.Match
-	FindFirst() match.Match
+	Find(match.Match) (match.Match, error)
+	FindFirst() (match.Match, error)
 	Add(m match.Match) error
 	Remove(m match.Match) error
 }
@@ -26,20 +26,31 @@ func NewMatchStorage() MatchStorage {
 	}
 }
 
-func (ms *matchStorageImpl) Find(matchId uuid.UUID) match.Match {
+func (ms *matchStorageImpl) Find(m match.Match) (match.Match, error) {
 	ms.RLock()
 	defer ms.RUnlock()
 
-	return ms.matches[matchId]
+	if m.ID() == uuid.Nil {
+		return nil, MatchStorageBadParameter
+	}
+	m = ms.matches[m.ID()]
+	if m == nil {
+		return nil, MatchStorageMatchNotFound
+	}
+
+	return m, nil
 }
 
-func (ms *matchStorageImpl) FindFirst() match.Match {
+func (ms *matchStorageImpl) FindFirst() (match.Match, error) {
+	ms.RLock()
+	defer ms.RUnlock()
+
 	for _, match := range ms.matches {
 		if match.Status() == pb.MatchStatus_Availabel {
-			return match
+			return match, nil
 		}
 	}
-	return nil
+	return nil, MatchStorageMatchNotFound
 }
 
 func (ms *matchStorageImpl) Add(m match.Match) error {

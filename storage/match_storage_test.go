@@ -10,73 +10,83 @@ import (
 )
 
 func TestFind(t *testing.T) {
-	testMatchId := uuid.New()
-	mockMatch := match.New(testMatchId)
+	uuid1 := uuid.New()
+	uuid2 := uuid.New()
+	availabel_match := match.MatchMock{IDMock: uuid1}
+	unavailabel_match := match.MatchMock{IDMock: uuid2}
 	cases := []struct {
-		nowMatchs map[uuid.UUID]match.Match
-		inMatchId uuid.UUID
-		outMatch  match.Match
+		beforeMatches map[uuid.UUID]match.Match
+		inMatch       match.Match
+		outMatch      match.Match
+		outError      error
 	}{
 		{
-			nowMatchs: map[uuid.UUID]match.Match{
-				testMatchId: mockMatch,
+			beforeMatches: map[uuid.UUID]match.Match{
+				uuid1: availabel_match,
 			},
-			inMatchId: testMatchId,
-			outMatch:  mockMatch,
+			inMatch:  availabel_match,
+			outMatch: availabel_match,
+			outError: nil,
 		},
 		{
-			nowMatchs: map[uuid.UUID]match.Match{
-				testMatchId: mockMatch,
+			beforeMatches: map[uuid.UUID]match.Match{
+				uuid1: availabel_match,
 			},
-			inMatchId: uuid.New(),
-			outMatch:  nil,
+			inMatch:  unavailabel_match,
+			outMatch: nil,
+			outError: MatchStorageMatchNotFound,
 		},
 	}
 
 	for _, c := range cases {
-		ms := matchStorageImpl{matches: c.nowMatchs}
-		match := ms.Find(c.inMatchId)
-		assert.Equal(t, c.outMatch, match)
+		ms := matchStorageImpl{matches: c.beforeMatches}
+		m, err := ms.Find(c.inMatch)
+		assert.Equal(t, c.outMatch, m)
+		assert.Equal(t, c.outError, err)
 	}
 }
 
 func TestFindFirst(t *testing.T) {
 	uuid1 := uuid.New()
 	uuid2 := uuid.New()
-	unavailabel_match := match.MatchMock{MockStatus: pb.MatchStatus_Unavailabel}
-	availabel_match := match.MatchMock{MockStatus: pb.MatchStatus_Availabel}
+	unavailabel_match := match.MatchMock{StatusMock: pb.MatchStatus_Unavailabel}
+	availabel_match := match.MatchMock{StatusMock: pb.MatchStatus_Availabel}
 	cases := []struct {
-		nowMatchs map[uuid.UUID]match.Match
-		outMatch  match.Match
+		beforeMatchs map[uuid.UUID]match.Match
+		outMatch     match.Match
+		outError     error
 	}{
 		{
-			nowMatchs: map[uuid.UUID]match.Match{
+			beforeMatchs: map[uuid.UUID]match.Match{
 				uuid1: unavailabel_match,
 				uuid2: availabel_match,
 			},
 			outMatch: availabel_match,
+			outError: nil,
 		},
 		{
-			nowMatchs: map[uuid.UUID]match.Match{
+			beforeMatchs: map[uuid.UUID]match.Match{
 				uuid1: unavailabel_match,
 				uuid2: unavailabel_match,
 			},
 			outMatch: nil,
+			outError: MatchStorageMatchNotFound,
 		},
 	}
 
 	for _, c := range cases {
-		ms := matchStorageImpl{matches: c.nowMatchs}
-		match := ms.FindFirst()
+		ms := matchStorageImpl{matches: c.beforeMatchs}
+		match, err := ms.FindFirst()
 		assert.Equal(t, c.outMatch, match)
+		assert.Equal(t, c.outError, err)
 	}
 }
 
 func TestAdd(t *testing.T) {
 	uuid1 := uuid.New()
 	uuid2 := uuid.New()
-	unavailabel_match := match.MatchMock{MockID: uuid2}
-	availabel_match := match.MatchMock{MockID: uuid2}
+	unavailabel_match := match.MatchMock{IDMock: uuid2}
+	availabel_match := match.MatchMock{IDMock: uuid2}
 	cases := []struct {
 		beforeMatches map[uuid.UUID]match.Match
 		afterMatches  map[uuid.UUID]match.Match
@@ -118,8 +128,8 @@ func TestAdd(t *testing.T) {
 func TestRemove(t *testing.T) {
 	uuid1 := uuid.New()
 	uuid2 := uuid.New()
-	availabel_match := match.MatchMock{MockID: uuid1}
-	unavailabel_match := match.MatchMock{MockID: uuid2}
+	availabel_match := match.MatchMock{IDMock: uuid1}
+	unavailabel_match := match.MatchMock{IDMock: uuid2}
 	cases := []struct {
 		beforeMatches map[uuid.UUID]match.Match
 		afterMatches  map[uuid.UUID]match.Match

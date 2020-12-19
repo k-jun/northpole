@@ -8,25 +8,25 @@ import (
 )
 
 type MatchMock struct {
-	MockError  error
-	MockStatus pb.MatchStatus
-	MockID     uuid.UUID
+	ErrorMock  error
+	StatusMock pb.MatchStatus
+	IDMock     uuid.UUID
 }
 
 func (m MatchMock) JoinUser(u *user.User) error {
-	return m.MockError
+	return m.ErrorMock
 }
 
 func (m MatchMock) LeaveUser(u *user.User) error {
-	return m.MockError
+	return m.ErrorMock
 }
 
 func (m MatchMock) ID() uuid.UUID {
-	return m.MockID
+	return m.IDMock
 }
 
 func (m MatchMock) Status() pb.MatchStatus {
-	return m.MockStatus
+	return m.StatusMock
 }
 
 func (m MatchMock) Channel() chan Match {
