@@ -12,6 +12,9 @@ import (
 type Match interface {
 	JoinUser(u *user.User) error
 	LeaveUser(u *user.User) error
+	ID() uuid.UUID
+	Status() pb.MatchStatus
+	Channel() chan Match
 }
 
 type MatchImpl struct {
@@ -21,7 +24,7 @@ type MatchImpl struct {
 	status           pb.MatchStatus
 	maxNumberOfUsers int
 	users            []*user.User
-	channel          chan MatchImpl
+	channel          chan Match
 }
 
 var (
@@ -34,8 +37,20 @@ func New(id uuid.UUID) Match {
 		status:           pb.MatchStatus_Availabel,
 		maxNumberOfUsers: maxNumberOfUser,
 		users:            []*user.User{},
-		channel:          make(chan MatchImpl, maxNumberOfUser),
+		channel:          make(chan Match, maxNumberOfUser),
 	}
+}
+
+func (m *MatchImpl) ID() uuid.UUID {
+	return m.id
+}
+
+func (m *MatchImpl) Status() pb.MatchStatus {
+	return m.status
+}
+
+func (m *MatchImpl) Channel() chan Match {
+	return m.channel
 }
 
 func (m *MatchImpl) JoinUser(inUser *user.User) error {
@@ -75,25 +90,19 @@ func (m *MatchImpl) LeaveUser(outUser *user.User) error {
 	if !found {
 		return MatchUserNotFound
 	}
+
 	if len(m.users) == 0 {
 		m.status = pb.MatchStatus_Unavailabel
+		close(m.channel)
+	} else {
+		go m.broadcast(*m)
 	}
 
-	go m.broadcast(*m)
 	return nil
 }
 
 func (m *MatchImpl) broadcast(match MatchImpl) {
-	if len(m.users) == 0 {
-		close(m.channel)
-	} else {
-		for i := 0; i < len(m.users); i++ {
-			m.channel <- match
-		}
+	for i := 0; i < len(m.users); i++ {
+		m.channel <- &match
 	}
-}
-
-func (m *MatchImpl) once() MatchImpl {
-	match := <-m.channel
-	return match
 }
