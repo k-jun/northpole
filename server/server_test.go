@@ -94,14 +94,28 @@ func TestJoinPrivateMatch(t *testing.T) {
 	}
 }
 
-func TestLeaveMatch(t *testing.T) {
+func TestLeavePublicMatch(t *testing.T) {
 
 	client := pb.NewNorthPoleClient(conn)
 	matchIdAndUserId := &pb.MatchIDAndUserID{
 		MatchId: "8f96317e-7731-346b-85fa-24eb1ed5b6ec",
 		UserId:  "6ffca27e-6e1b-30a4-9393-91ba7c59e1e6",
 	}
-	matchInfo, err := client.LeaveMatch(context.Background(), matchIdAndUserId)
+	matchInfo, err := client.LeavePublicMatch(context.Background(), matchIdAndUserId)
+	if err != nil {
+		t.Fatal(err)
+	}
+	log.Println(matchInfo)
+}
+
+func TestLeavePrivateMatch(t *testing.T) {
+
+	client := pb.NewNorthPoleClient(conn)
+	matchIdAndUserId := &pb.MatchIDAndUserID{
+		MatchId: "8f96317e-7731-346b-85fa-24eb1ed5b6ec",
+		UserId:  "6ffca27e-6e1b-30a4-9393-91ba7c59e1e6",
+	}
+	matchInfo, err := client.LeavePrivateMatch(context.Background(), matchIdAndUserId)
 	if err != nil {
 		t.Fatal(err)
 	}

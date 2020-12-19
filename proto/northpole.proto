@@ -9,7 +9,8 @@ service NorthPole {
   rpc JoinPublicMatch(UserInfo) returns (stream MatchInfo) {}
   rpc CreatePrivateMatch(UserInfo) returns (stream MatchInfo) {}
   rpc JoinPrivateMatch(MatchIDAndUserID) returns (stream MatchInfo) {}
-  rpc LeaveMatch(MatchIDAndUserID) returns (MatchInfo) {}
+  rpc LeavePublicMatch(MatchIDAndUserID) returns (MatchInfo) {}
+  rpc LeavePrivateMatch(MatchIDAndUserID) returns (MatchInfo) {}
 }
 
 enum MatchStatus {

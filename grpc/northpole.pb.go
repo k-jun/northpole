@@ -271,8 +271,8 @@ var file_northpole_proto_rawDesc = []byte{
 	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x2a,
 	0x2d, 0x0a, 0x0b, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0d,
 	0x0a, 0x09, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x10, 0x00, 0x12, 0x0f, 0x0a,
-	0x0b, 0x55, 0x6e, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x10, 0x01, 0x32, 0xd0,
-	0x01, 0x0a, 0x09, 0x4e, 0x6f, 0x72, 0x74, 0x68, 0x50, 0x6f, 0x6c, 0x65, 0x12, 0x2c, 0x0a, 0x0f,
+	0x0b, 0x55, 0x6e, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x10, 0x01, 0x32, 0x8c,
+	0x02, 0x0a, 0x09, 0x4e, 0x6f, 0x72, 0x74, 0x68, 0x50, 0x6f, 0x6c, 0x65, 0x12, 0x2c, 0x0a, 0x0f,
 	0x4a, 0x6f, 0x69, 0x6e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x12,
 	0x09, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x0a, 0x2e, 0x4d, 0x61, 0x74,
 	0x63, 0x68, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00, 0x30, 0x01, 0x12, 0x2f, 0x0a, 0x12, 0x43, 0x72,
@@ -282,12 +282,15 @@ var file_northpole_proto_rawDesc = []byte{
 	0x6f, 0x69, 0x6e, 0x50, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x12,
 	0x11, 0x2e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x49, 0x44, 0x41, 0x6e, 0x64, 0x55, 0x73, 0x65, 0x72,
 	0x49, 0x44, 0x1a, 0x0a, 0x2e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00,
-	0x30, 0x01, 0x12, 0x2d, 0x0a, 0x0a, 0x4c, 0x65, 0x61, 0x76, 0x65, 0x4d, 0x61, 0x74, 0x63, 0x68,
-	0x12, 0x11, 0x2e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x49, 0x44, 0x41, 0x6e, 0x64, 0x55, 0x73, 0x65,
-	0x72, 0x49, 0x44, 0x1a, 0x0a, 0x2e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x49, 0x6e, 0x66, 0x6f, 0x22,
-	0x00, 0x42, 0x17, 0x5a, 0x15, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x6b, 0x2d, 0x6a, 0x75, 0x6e, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x30, 0x01, 0x12, 0x33, 0x0a, 0x10, 0x4c, 0x65, 0x61, 0x76, 0x65, 0x50, 0x75, 0x62, 0x6c, 0x69,
+	0x63, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x12, 0x11, 0x2e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x49, 0x44,
+	0x41, 0x6e, 0x64, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44, 0x1a, 0x0a, 0x2e, 0x4d, 0x61, 0x74, 0x63,
+	0x68, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00, 0x12, 0x34, 0x0a, 0x11, 0x4c, 0x65, 0x61, 0x76, 0x65,
+	0x50, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x12, 0x11, 0x2e, 0x4d,
+	0x61, 0x74, 0x63, 0x68, 0x49, 0x44, 0x41, 0x6e, 0x64, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44, 0x1a,
+	0x0a, 0x2e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00, 0x42, 0x17, 0x5a,
+	0x15, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6b, 0x2d, 0x6a, 0x75,
+	0x6e, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -315,13 +318,15 @@ var file_northpole_proto_depIdxs = []int32{
 	1, // 1: NorthPole.JoinPublicMatch:input_type -> UserInfo
 	1, // 2: NorthPole.CreatePrivateMatch:input_type -> UserInfo
 	3, // 3: NorthPole.JoinPrivateMatch:input_type -> MatchIDAndUserID
-	3, // 4: NorthPole.LeaveMatch:input_type -> MatchIDAndUserID
-	2, // 5: NorthPole.JoinPublicMatch:output_type -> MatchInfo
-	2, // 6: NorthPole.CreatePrivateMatch:output_type -> MatchInfo
-	2, // 7: NorthPole.JoinPrivateMatch:output_type -> MatchInfo
-	2, // 8: NorthPole.LeaveMatch:output_type -> MatchInfo
-	5, // [5:9] is the sub-list for method output_type
-	1, // [1:5] is the sub-list for method input_type
+	3, // 4: NorthPole.LeavePublicMatch:input_type -> MatchIDAndUserID
+	3, // 5: NorthPole.LeavePrivateMatch:input_type -> MatchIDAndUserID
+	2, // 6: NorthPole.JoinPublicMatch:output_type -> MatchInfo
+	2, // 7: NorthPole.CreatePrivateMatch:output_type -> MatchInfo
+	2, // 8: NorthPole.JoinPrivateMatch:output_type -> MatchInfo
+	2, // 9: NorthPole.LeavePublicMatch:output_type -> MatchInfo
+	2, // 10: NorthPole.LeavePrivateMatch:output_type -> MatchInfo
+	6, // [6:11] is the sub-list for method output_type
+	1, // [1:6] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -406,7 +411,8 @@ type NorthPoleClient interface {
 	JoinPublicMatch(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (NorthPole_JoinPublicMatchClient, error)
 	CreatePrivateMatch(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (NorthPole_CreatePrivateMatchClient, error)
 	JoinPrivateMatch(ctx context.Context, in *MatchIDAndUserID, opts ...grpc.CallOption) (NorthPole_JoinPrivateMatchClient, error)
-	LeaveMatch(ctx context.Context, in *MatchIDAndUserID, opts ...grpc.CallOption) (*MatchInfo, error)
+	LeavePublicMatch(ctx context.Context, in *MatchIDAndUserID, opts ...grpc.CallOption) (*MatchInfo, error)
+	LeavePrivateMatch(ctx context.Context, in *MatchIDAndUserID, opts ...grpc.CallOption) (*MatchInfo, error)
 }
 
 type northPoleClient struct {
@@ -513,9 +519,18 @@ func (x *northPoleJoinPrivateMatchClient) Recv() (*MatchInfo, error) {
 	return m, nil
 }
 
-func (c *northPoleClient) LeaveMatch(ctx context.Context, in *MatchIDAndUserID, opts ...grpc.CallOption) (*MatchInfo, error) {
+func (c *northPoleClient) LeavePublicMatch(ctx context.Context, in *MatchIDAndUserID, opts ...grpc.CallOption) (*MatchInfo, error) {
 	out := new(MatchInfo)
-	err := c.cc.Invoke(ctx, "/NorthPole/LeaveMatch", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/NorthPole/LeavePublicMatch", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *northPoleClient) LeavePrivateMatch(ctx context.Context, in *MatchIDAndUserID, opts ...grpc.CallOption) (*MatchInfo, error) {
+	out := new(MatchInfo)
+	err := c.cc.Invoke(ctx, "/NorthPole/LeavePrivateMatch", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -527,7 +542,8 @@ type NorthPoleServer interface {
 	JoinPublicMatch(*UserInfo, NorthPole_JoinPublicMatchServer) error
 	CreatePrivateMatch(*UserInfo, NorthPole_CreatePrivateMatchServer) error
 	JoinPrivateMatch(*MatchIDAndUserID, NorthPole_JoinPrivateMatchServer) error
-	LeaveMatch(context.Context, *MatchIDAndUserID) (*MatchInfo, error)
+	LeavePublicMatch(context.Context, *MatchIDAndUserID) (*MatchInfo, error)
+	LeavePrivateMatch(context.Context, *MatchIDAndUserID) (*MatchInfo, error)
 }
 
 // UnimplementedNorthPoleServer can be embedded to have forward compatible implementations.
@@ -543,8 +559,11 @@ func (*UnimplementedNorthPoleServer) CreatePrivateMatch(*UserInfo, NorthPole_Cre
 func (*UnimplementedNorthPoleServer) JoinPrivateMatch(*MatchIDAndUserID, NorthPole_JoinPrivateMatchServer) error {
 	return status.Errorf(codes.Unimplemented, "method JoinPrivateMatch not implemented")
 }
-func (*UnimplementedNorthPoleServer) LeaveMatch(context.Context, *MatchIDAndUserID) (*MatchInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LeaveMatch not implemented")
+func (*UnimplementedNorthPoleServer) LeavePublicMatch(context.Context, *MatchIDAndUserID) (*MatchInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LeavePublicMatch not implemented")
+}
+func (*UnimplementedNorthPoleServer) LeavePrivateMatch(context.Context, *MatchIDAndUserID) (*MatchInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LeavePrivateMatch not implemented")
 }
 
 func RegisterNorthPoleServer(s *grpc.Server, srv NorthPoleServer) {
@@ -614,20 +633,38 @@ func (x *northPoleJoinPrivateMatchServer) Send(m *MatchInfo) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _NorthPole_LeaveMatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _NorthPole_LeavePublicMatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MatchIDAndUserID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NorthPoleServer).LeaveMatch(ctx, in)
+		return srv.(NorthPoleServer).LeavePublicMatch(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/NorthPole/LeaveMatch",
+		FullMethod: "/NorthPole/LeavePublicMatch",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NorthPoleServer).LeaveMatch(ctx, req.(*MatchIDAndUserID))
+		return srv.(NorthPoleServer).LeavePublicMatch(ctx, req.(*MatchIDAndUserID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NorthPole_LeavePrivateMatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MatchIDAndUserID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NorthPoleServer).LeavePrivateMatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/NorthPole/LeavePrivateMatch",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NorthPoleServer).LeavePrivateMatch(ctx, req.(*MatchIDAndUserID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -637,8 +674,12 @@ var _NorthPole_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*NorthPoleServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "LeaveMatch",
-			Handler:    _NorthPole_LeaveMatch_Handler,
+			MethodName: "LeavePublicMatch",
+			Handler:    _NorthPole_LeavePublicMatch_Handler,
+		},
+		{
+			MethodName: "LeavePrivateMatch",
+			Handler:    _NorthPole_LeavePrivateMatch_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
