@@ -7,18 +7,18 @@ option go_package = "github.com/k-jun/grpc";
 
 service NorthPole {
   rpc JoinPublicMatch(UserInfo) returns (stream MatchInfo) {}
-  rpc JoinPrivateMatch(UserInfo) returns (stream MatchInfo) {}
+  rpc CreatePrivateMatch(UserInfo) returns (stream MatchInfo) {}
+  rpc JoinPrivateMatch(MatchIDAndUserID) returns (stream MatchInfo) {}
   rpc LeaveMatch(MatchIDAndUserID) returns (MatchInfo) {}
 }
 
 enum MatchStatus {
-  Waiting = 0;
-  Start = 1;
+  Availabel = 0;
+  Unavailabel = 1;
 }
 
 message UserInfo {
   string id = 1;
-  string name = 2;
 }
 
 message MatchInfo {

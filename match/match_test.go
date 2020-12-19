@@ -18,7 +18,7 @@ func TestJoin(t *testing.T) {
 	userId := uuid.New()
 	cases := []struct {
 		nowStatus pb.MatchStatus
-		nowMaxNOU int64
+		nowMaxNOU int
 		nowUsers  []*user.User
 		inUser    *user.User
 		outStatus pb.MatchStatus
@@ -26,11 +26,11 @@ func TestJoin(t *testing.T) {
 		outError  error
 	}{
 		{
-			nowStatus: pb.MatchStatus_Waiting,
+			nowStatus: pb.MatchStatus_Availabel,
 			nowMaxNOU: 4,
 			nowUsers:  []*user.User{},
 			inUser:    user.New(userId, "Major"),
-			outStatus: pb.MatchStatus_Waiting,
+			outStatus: pb.MatchStatus_Availabel,
 			outUsers:  []*user.User{user.New(userId, "Major")},
 			outError:  nil,
 		},
@@ -57,7 +57,7 @@ func TestLeave(t *testing.T) {
 	userId := uuid.New()
 	cases := []struct {
 		nowStatus pb.MatchStatus
-		nowMaxNOU int64
+		nowMaxNOU int
 		nowUsers  []*user.User
 		inUser    *user.User
 		outStatus pb.MatchStatus
@@ -65,11 +65,11 @@ func TestLeave(t *testing.T) {
 		outError  error
 	}{
 		{
-			nowStatus: pb.MatchStatus_Waiting,
+			nowStatus: pb.MatchStatus_Availabel,
 			nowMaxNOU: 4,
 			nowUsers:  []*user.User{user.New(userId, "Major")},
 			inUser:    user.New(userId, "Major"),
-			outStatus: pb.MatchStatus_Waiting,
+			outStatus: pb.MatchStatus_Availabel,
 			outUsers:  []*user.User{},
 			outError:  nil,
 		},

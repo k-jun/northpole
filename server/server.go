@@ -16,7 +16,7 @@ func (s *northPoleServer) JoinPublicMatch(userInfo *pb.UserInfo, stream pb.North
 	for i := 0; i < 3; i++ {
 		testMatchInfo := &pb.MatchInfo{
 			Id:                   "c51a0ef2-550b-32e3-90e1-930f52691b0e",
-			Status:               pb.MatchStatus_Waiting,
+			Status:               pb.MatchStatus_Availabel,
 			CurrentNumberOfUsers: 3,
 			MaxNumberOfUsers:     4,
 		}
@@ -25,11 +25,24 @@ func (s *northPoleServer) JoinPublicMatch(userInfo *pb.UserInfo, stream pb.North
 	return nil
 }
 
-func (s *northPoleServer) JoinPrivateMatch(userInfo *pb.UserInfo, stream pb.NorthPole_JoinPrivateMatchServer) error {
+func (s *northPoleServer) CreatePrivateMatch(userInfo *pb.UserInfo, stream pb.NorthPole_CreatePrivateMatchServer) error {
 	for i := 0; i < 3; i++ {
 		testMatchInfo := &pb.MatchInfo{
 			Id:                   "c0310d40-a450-3af9-9e4e-3f4e0f4c26df",
-			Status:               pb.MatchStatus_Waiting,
+			Status:               pb.MatchStatus_Availabel,
+			CurrentNumberOfUsers: 3,
+			MaxNumberOfUsers:     4,
+		}
+		stream.Send(testMatchInfo)
+	}
+	return nil
+}
+
+func (s *northPoleServer) JoinPrivateMatch(midAndUid *pb.MatchIDAndUserID, stream pb.NorthPole_JoinPrivateMatchServer) error {
+	for i := 0; i < 3; i++ {
+		testMatchInfo := &pb.MatchInfo{
+			Id:                   "c0310d40-a450-3af9-9e4e-3f4e0f4c26df",
+			Status:               pb.MatchStatus_Availabel,
 			CurrentNumberOfUsers: 3,
 			MaxNumberOfUsers:     4,
 		}
@@ -41,7 +54,7 @@ func (s *northPoleServer) JoinPrivateMatch(userInfo *pb.UserInfo, stream pb.Nort
 func (s *northPoleServer) LeaveMatch(ctx context.Context, midAndUid *pb.MatchIDAndUserID) (*pb.MatchInfo, error) {
 	testMatchInfo := &pb.MatchInfo{
 		Id:                   "03240404-7d61-388f-8584-99a7e0438363",
-		Status:               pb.MatchStatus_Waiting,
+		Status:               pb.MatchStatus_Availabel,
 		CurrentNumberOfUsers: 3,
 		MaxNumberOfUsers:     4,
 	}
