@@ -32,3 +32,7 @@ func (m MatchMock) Status() pb.MatchStatus {
 func (m MatchMock) Channel() chan Match {
 	return nil
 }
+
+func (m MatchMock) MatchInfo() *pb.MatchInfo {
+	return nil
+}

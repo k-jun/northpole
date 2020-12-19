@@ -8,6 +8,8 @@ build:
 test:
 	 go test -v ./server
 	 go test -v ./match
+	 go test -v ./storage
+	 go test -v ./usecase
 
 .PHONY: testMatch
 testMatch:

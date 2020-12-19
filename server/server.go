@@ -4,101 +4,131 @@ import (
 	"context"
 
 	pb "northpole/grpc"
+	"northpole/match"
+	"northpole/usecase"
+	"northpole/user"
 
 	"northpole/storage"
 
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 )
 
 var port = 8080
 
 type northPoleServer struct {
-	privateMatchStroage storage.MatchStorage
-	publicMatchStroage  storage.MatchStorage
+	matchUsecase usecase.MatchUsecase
 }
 
 func (s *northPoleServer) JoinPublicMatch(userInfo *pb.UserInfo, stream pb.NorthPole_JoinPublicMatchServer) error {
-	// validation
-	// userId, err := uuid.Parse(userInfo.Id)
-	// if err != nil {
-	// 	return err
-	// }
-	// // view
-	// targetUser := user.New(userId)
-	//
-	// // usecase
-	// targetMatch := s.privateMatchStroage.FindFirst()
-	// if targetMatch == nil {
-	// 	newUUID := uuid.New()
-	// 	targetMatch = match.New(newUUID)
-	// 	s.publicMatchStroage.Add(targetMatch)
-	// }
-	//
-	// err = targetMatch.JoinUser(targetUser)
-	// if err != nil {
-	// 	return err
-	// }
+	userId, err := uuid.Parse(userInfo.Id)
+	if err != nil {
+		return err
+	}
+	u := user.New(userId)
 
-	// channel
-	// for {
-	// 	m := <-targetMatch.Channel()
-	// 	// view
-	// 	testMatchInfo := &pb.MatchInfo{
-	// 		Id:                   m.ID().String(),
-	// 		Status:               m.Status(),
-	// 		CurrentNumberOfUsers: 3,
-	// 		MaxNumberOfUsers:     4,
-	// 	}
-	// 	stream.Send(testMatchInfo)
-	//
-	// }
+	m, err := s.matchUsecase.JoinPublicMatch(u)
+	if err != nil {
+		return err
+	}
+
+	for {
+		cm := <-m.Channel()
+		if cm.ID() == uuid.Nil {
+			break
+		}
+		stream.Send(cm.MatchInfo())
+	}
 	return nil
 }
 
 func (s *northPoleServer) CreatePrivateMatch(userInfo *pb.UserInfo, stream pb.NorthPole_CreatePrivateMatchServer) error {
-	for i := 0; i < 3; i++ {
-		testMatchInfo := &pb.MatchInfo{
-			Id:                   "c0310d40-a450-3af9-9e4e-3f4e0f4c26df",
-			Status:               pb.MatchStatus_Availabel,
-			CurrentNumberOfUsers: 3,
-			MaxNumberOfUsers:     4,
+	userId, err := uuid.Parse(userInfo.Id)
+	if err != nil {
+		return err
+	}
+	u := user.New(userId)
+
+	m, err := s.matchUsecase.CreatePrivateMatch(u)
+	if err != nil {
+		return err
+	}
+
+	for {
+		cm := <-m.Channel()
+		if cm.ID() == uuid.Nil {
+			break
 		}
-		stream.Send(testMatchInfo)
+		stream.Send(cm.MatchInfo())
 	}
 	return nil
 }
 
 func (s *northPoleServer) JoinPrivateMatch(midAndUid *pb.MatchIDAndUserID, stream pb.NorthPole_JoinPrivateMatchServer) error {
-	for i := 0; i < 3; i++ {
-		testMatchInfo := &pb.MatchInfo{
-			Id:                   "c0310d40-a450-3af9-9e4e-3f4e0f4c26df",
-			Status:               pb.MatchStatus_Availabel,
-			CurrentNumberOfUsers: 3,
-			MaxNumberOfUsers:     4,
+	userId, err := uuid.Parse(midAndUid.UserId)
+	if err != nil {
+		return err
+	}
+	u := user.New(userId)
+	matchId, err := uuid.Parse(midAndUid.MatchId)
+	if err != nil {
+		return err
+	}
+	m := match.New(matchId)
+
+	m, err = s.matchUsecase.JoinPrivateMatch(u, m)
+	if err != nil {
+		return err
+	}
+
+	for {
+		cm := <-m.Channel()
+		if cm.ID() == uuid.Nil {
+			break
 		}
-		stream.Send(testMatchInfo)
+		stream.Send(cm.MatchInfo())
 	}
 	return nil
 }
 
 func (s *northPoleServer) LeavePublicMatch(ctx context.Context, midAndUid *pb.MatchIDAndUserID) (*pb.MatchInfo, error) {
-	testMatchInfo := &pb.MatchInfo{
-		Id:                   "03240404-7d61-388f-8584-99a7e0438363",
-		Status:               pb.MatchStatus_Availabel,
-		CurrentNumberOfUsers: 3,
-		MaxNumberOfUsers:     4,
+	userId, err := uuid.Parse(midAndUid.UserId)
+	if err != nil {
+		return nil, err
 	}
-	return testMatchInfo, nil
+	u := user.New(userId)
+	matchId, err := uuid.Parse(midAndUid.MatchId)
+	if err != nil {
+		return nil, err
+	}
+	m := match.New(matchId)
+
+	m, err = s.matchUsecase.LeavePublicMatch(u, m)
+	if err != nil {
+		return nil, err
+	}
+
+	return m.MatchInfo(), nil
 }
 
 func (s *northPoleServer) LeavePrivateMatch(ctx context.Context, midAndUid *pb.MatchIDAndUserID) (*pb.MatchInfo, error) {
-	testMatchInfo := &pb.MatchInfo{
-		Id:                   "03240404-7d61-388f-8584-99a7e0438363",
-		Status:               pb.MatchStatus_Availabel,
-		CurrentNumberOfUsers: 3,
-		MaxNumberOfUsers:     4,
+	userId, err := uuid.Parse(midAndUid.UserId)
+	if err != nil {
+		return nil, err
 	}
-	return testMatchInfo, nil
+	u := user.New(userId)
+	matchId, err := uuid.Parse(midAndUid.MatchId)
+	if err != nil {
+		return nil, err
+	}
+	m := match.New(matchId)
+
+	m, err = s.matchUsecase.LeavePrivateMatch(u, m)
+	if err != nil {
+		return nil, err
+	}
+
+	return m.MatchInfo(), nil
 }
 
 func NewServer() *grpc.Server {
@@ -106,6 +136,7 @@ func NewServer() *grpc.Server {
 
 	pubms := storage.NewMatchStorage()
 	prims := storage.NewMatchStorage()
-	pb.RegisterNorthPoleServer(grpcServer, &northPoleServer{publicMatchStroage: pubms, privateMatchStroage: prims})
+	matchUsecase := usecase.NewMatchUsecase(pubms, prims)
+	pb.RegisterNorthPoleServer(grpcServer, &northPoleServer{matchUsecase: matchUsecase})
 	return grpcServer
 }

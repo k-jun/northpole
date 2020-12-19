@@ -15,6 +15,7 @@ type Match interface {
 	ID() uuid.UUID
 	Status() pb.MatchStatus
 	Channel() chan Match
+	MatchInfo() *pb.MatchInfo
 }
 
 type MatchImpl struct {
@@ -104,5 +105,14 @@ func (m *MatchImpl) LeaveUser(outUser *user.User) error {
 func (m *MatchImpl) broadcast(match MatchImpl) {
 	for i := 0; i < len(m.users); i++ {
 		m.channel <- &match
+	}
+}
+
+func (m *MatchImpl) MatchInfo() *pb.MatchInfo {
+	return &pb.MatchInfo{
+		Id:                   m.id.String(),
+		Status:               m.status,
+		CurrentNumberOfUsers: int64(len(m.users)),
+		MaxNumberOfUsers:     int64(m.maxNumberOfUsers),
 	}
 }

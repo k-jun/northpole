@@ -20,7 +20,7 @@ type matchUsecaseImpl struct {
 	privateMatchStorage storage.MatchStorage
 }
 
-func New(pubms storage.MatchStorage, prims storage.MatchStorage) MatchUsecase {
+func NewMatchUsecase(pubms storage.MatchStorage, prims storage.MatchStorage) MatchUsecase {
 	return &matchUsecaseImpl{
 		publicMatchStorage:  pubms,
 		privateMatchStorage: prims,

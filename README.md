@@ -27,6 +27,14 @@ clang-format -i proto/northpole.proto
 
 ## run
 
+```bash
+go run main.go
+```
+
+## todo
+
+* rewrite test code parameter to before/after format
+
 
 ## reference
 
