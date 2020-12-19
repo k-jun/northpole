@@ -16,12 +16,12 @@ type Match interface {
 
 type MatchImpl struct {
 	sync.Mutex
-	cond *sync.Cond
 
 	id               uuid.UUID
 	status           pb.MatchStatus
 	maxNumberOfUsers int64
 	users            []*user.User
+	channel          chan MatchImpl
 }
 
 var (
@@ -29,14 +29,12 @@ var (
 )
 
 func New(id uuid.UUID) Match {
-	lock := new(sync.Mutex)
-	cond := sync.NewCond(lock)
 	return &MatchImpl{
-		cond:             cond,
 		id:               id,
 		status:           pb.MatchStatus_Waiting,
 		maxNumberOfUsers: maxNumberOfUser,
 		users:            []*user.User{},
+		channel:          make(chan MatchImpl),
 	}
 }
 
@@ -51,7 +49,7 @@ func (m *MatchImpl) JoinUser(inUser *user.User) error {
 	if int64(len(m.users)) >= m.maxNumberOfUsers {
 		m.status = pb.MatchStatus_Start
 	}
-	m.cond.Broadcast()
+	go m.broadcast()
 
 	return nil
 }
@@ -76,7 +74,13 @@ func (m *MatchImpl) LeaveUser(outUser *user.User) error {
 	if !found {
 		return MatchUserNotFound
 	}
-	m.cond.Broadcast()
+	go m.broadcast()
 
 	return nil
+}
+
+func (m *MatchImpl) broadcast() {
+	for i := 0; i < len(m.users); i++ {
+		m.channel <- *m
+	}
 }

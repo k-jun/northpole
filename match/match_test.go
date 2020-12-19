@@ -3,7 +3,6 @@ package match
 import (
 	pb "northpole/grpc"
 	"northpole/user"
-	"sync"
 	"testing"
 
 	"github.com/google/uuid"
@@ -38,10 +37,7 @@ func TestJoin(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		lock := new(sync.Mutex)
-		cond := sync.NewCond(lock)
 		match := MatchImpl{
-			cond:             cond,
 			id:               uuid.New(),
 			status:           c.nowStatus,
 			users:            c.nowUsers,
@@ -80,10 +76,7 @@ func TestLeave(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		lock := new(sync.Mutex)
-		cond := sync.NewCond(lock)
 		match := MatchImpl{
-			cond:             cond,
 			id:               uuid.New(),
 			status:           c.nowStatus,
 			users:            c.nowUsers,
