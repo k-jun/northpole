@@ -2,6 +2,8 @@ package match
 
 import (
 	pb "northpole/grpc"
+	"northpole/user"
+	"sync"
 	"testing"
 
 	"github.com/google/uuid"
@@ -10,84 +12,89 @@ import (
 
 func TestNew(t *testing.T) {
 	outId := uuid.New()
-	match := New(outId)
-	outMatch := &MatchImpl{
-		id:                   outId,
-		status:               pb.MatchStatus_Waiting,
-		maxNumberOfUsers:     maxNumberOfUser,
-		currentNumberOfUsers: 0,
-	}
-	assert.Equal(t, outMatch, match)
+	_ = New(outId)
 }
 
 func TestJoin(t *testing.T) {
+	userId := uuid.New()
 	cases := []struct {
-		nowStatus     pb.MatchStatus
-		nowMaxNOU     int64
-		nowCurrentNOU int64
-		outStatus     pb.MatchStatus
-		outCurrentNOU int64
-		outError      error
+		nowStatus pb.MatchStatus
+		nowMaxNOU int64
+		nowUsers  []*user.User
+		inUser    *user.User
+		outStatus pb.MatchStatus
+		outUsers  []*user.User
+		outError  error
 	}{
 		{
-			nowStatus:     pb.MatchStatus_Waiting,
-			nowMaxNOU:     4,
-			nowCurrentNOU: 2,
-			outStatus:     pb.MatchStatus_Waiting,
-			outCurrentNOU: 3,
-			outError:      nil,
+			nowStatus: pb.MatchStatus_Waiting,
+			nowMaxNOU: 4,
+			nowUsers:  []*user.User{},
+			inUser:    user.New(userId, "Major"),
+			outStatus: pb.MatchStatus_Waiting,
+			outUsers:  []*user.User{user.New(userId, "Major")},
+			outError:  nil,
 		},
 	}
 
 	for _, c := range cases {
+		lock := new(sync.Mutex)
+		cond := sync.NewCond(lock)
 		match := MatchImpl{
-			id:                   uuid.New(),
-			status:               c.nowStatus,
-			currentNumberOfUsers: c.nowCurrentNOU,
-			maxNumberOfUsers:     c.nowMaxNOU,
+			cond:             cond,
+			id:               uuid.New(),
+			status:           c.nowStatus,
+			users:            c.nowUsers,
+			maxNumberOfUsers: c.nowMaxNOU,
 		}
-		err := match.Join()
+		err := match.JoinUser(c.inUser)
 		if err != nil && err == c.outError {
 			continue
 		}
 		assert.Equal(t, c.outError, err)
 		assert.Equal(t, c.outStatus, match.status)
-		assert.Equal(t, c.outCurrentNOU, match.currentNumberOfUsers)
+		assert.Equal(t, c.outUsers, match.users)
 	}
 }
 
 func TestLeave(t *testing.T) {
+	userId := uuid.New()
 	cases := []struct {
-		nowStatus     pb.MatchStatus
-		nowMaxNOU     int64
-		nowCurrentNOU int64
-		outStatus     pb.MatchStatus
-		outCurrentNOU int64
-		outError      error
+		nowStatus pb.MatchStatus
+		nowMaxNOU int64
+		nowUsers  []*user.User
+		inUser    *user.User
+		outStatus pb.MatchStatus
+		outUsers  []*user.User
+		outError  error
 	}{
 		{
-			nowStatus:     pb.MatchStatus_Waiting,
-			nowMaxNOU:     4,
-			nowCurrentNOU: 2,
-			outStatus:     pb.MatchStatus_Waiting,
-			outCurrentNOU: 1,
-			outError:      nil,
+			nowStatus: pb.MatchStatus_Waiting,
+			nowMaxNOU: 4,
+			nowUsers:  []*user.User{user.New(userId, "Major")},
+			inUser:    user.New(userId, "Major"),
+			outStatus: pb.MatchStatus_Waiting,
+			outUsers:  []*user.User{},
+			outError:  nil,
 		},
 	}
 
 	for _, c := range cases {
+		lock := new(sync.Mutex)
+		cond := sync.NewCond(lock)
 		match := MatchImpl{
-			id:                   uuid.New(),
-			status:               c.nowStatus,
-			currentNumberOfUsers: c.nowCurrentNOU,
-			maxNumberOfUsers:     c.nowMaxNOU,
+			cond:             cond,
+			id:               uuid.New(),
+			status:           c.nowStatus,
+			users:            c.nowUsers,
+			maxNumberOfUsers: c.nowMaxNOU,
 		}
-		err := match.Leave()
+		err := match.LeaveUser(c.inUser)
 		if err != nil && err == c.outError {
 			continue
 		}
 		assert.Equal(t, c.outError, err)
 		assert.Equal(t, c.outStatus, match.status)
-		assert.Equal(t, c.outCurrentNOU, match.currentNumberOfUsers)
+		assert.Equal(t, c.outUsers, match.users)
 	}
 }
