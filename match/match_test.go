@@ -69,14 +69,16 @@ func TestLeave(t *testing.T) {
 			nowMaxNOU: 4,
 			nowUsers:  []*user.User{user.New(userId, "Major")},
 			inUser:    user.New(userId, "Major"),
-			outStatus: pb.MatchStatus_Availabel,
+			outStatus: pb.MatchStatus_Unavailabel,
 			outUsers:  []*user.User{},
 			outError:  nil,
 		},
 	}
 
 	for _, c := range cases {
+		channel := make(chan MatchImpl)
 		match := MatchImpl{
+			channel:          channel,
 			id:               uuid.New(),
 			status:           c.nowStatus,
 			users:            c.nowUsers,
