@@ -137,3 +137,51 @@ func TestLeave(t *testing.T) {
 		}
 	}
 }
+
+func TestMatchInfo(t *testing.T) {
+	uuid1 := uuid.New()
+	uuid2 := uuid.New()
+	cases := []struct {
+		beforeId     uuid.UUID
+		beforeStatus pb.MatchStatus
+		beforeMaxNOU int
+		beforeUsers  []*user.User
+		outMatchInfo *pb.MatchInfo
+	}{
+		{
+			beforeId:     uuid1,
+			beforeStatus: pb.MatchStatus_Availabel,
+			beforeMaxNOU: 3,
+			beforeUsers:  []*user.User{user.New(uuid2)},
+			outMatchInfo: &pb.MatchInfo{
+				Id:                   uuid1.String(),
+				Status:               pb.MatchStatus_Availabel,
+				MaxNumberOfUsers:     3,
+				CurrentNumberOfUsers: 1,
+			},
+		},
+		{
+			beforeId:     uuid1,
+			beforeStatus: pb.MatchStatus_Availabel,
+			beforeMaxNOU: 3,
+			beforeUsers:  []*user.User{user.New(uuid2), user.New(uuid2)},
+			outMatchInfo: &pb.MatchInfo{
+				Id:                   uuid1.String(),
+				Status:               pb.MatchStatus_Availabel,
+				MaxNumberOfUsers:     3,
+				CurrentNumberOfUsers: 2,
+			},
+		},
+	}
+
+	for _, c := range cases {
+		match := MatchImpl{
+			id:               c.beforeId,
+			status:           c.beforeStatus,
+			users:            c.beforeUsers,
+			maxNumberOfUsers: c.beforeMaxNOU,
+		}
+		assert.Equal(t, c.outMatchInfo, match.MatchInfo())
+	}
+
+}
