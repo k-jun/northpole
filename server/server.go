@@ -14,8 +14,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-var port = 8080
-
 type northPoleServer struct {
 	matchUsecase usecase.MatchUsecase
 }
