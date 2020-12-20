@@ -30,11 +30,6 @@ clang-format -i proto/northpole.proto
 go run main.go
 ```
 
-## todo
-
-* rewrite test code parameter to before/after format
-
-
 ## reference
 
 * https://developers.google.com/protocol-buffers/docs/proto3

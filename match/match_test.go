@@ -17,40 +17,40 @@ func TestNew(t *testing.T) {
 func TestJoin(t *testing.T) {
 	userId := uuid.New()
 	cases := []struct {
-		nowStatus pb.MatchStatus
-		nowMaxNOU int
-		nowUsers  []*user.User
-		inUser    *user.User
-		outStatus pb.MatchStatus
-		outUsers  []*user.User
-		outError  error
+		beforeStatus pb.MatchStatus
+		beforeMaxNOU int
+		beforeUsers  []*user.User
+		inUser       *user.User
+		afterStatus  pb.MatchStatus
+		afterUsers   []*user.User
+		outError     error
 	}{
 		{
-			nowStatus: pb.MatchStatus_Availabel,
-			nowMaxNOU: 4,
-			nowUsers:  []*user.User{},
-			inUser:    user.New(userId),
-			outStatus: pb.MatchStatus_Availabel,
-			outUsers:  []*user.User{user.New(userId)},
-			outError:  nil,
+			beforeStatus: pb.MatchStatus_Availabel,
+			beforeMaxNOU: 4,
+			beforeUsers:  []*user.User{},
+			inUser:       user.New(userId),
+			afterStatus:  pb.MatchStatus_Availabel,
+			afterUsers:   []*user.User{user.New(userId)},
+			outError:     nil,
 		},
 		{
-			nowStatus: pb.MatchStatus_Availabel,
-			nowMaxNOU: 4,
-			nowUsers:  []*user.User{user.New(userId), user.New(userId), user.New(userId)},
-			inUser:    user.New(userId),
-			outStatus: pb.MatchStatus_Unavailabel,
-			outUsers:  []*user.User{user.New(userId), user.New(userId), user.New(userId), user.New(userId)},
-			outError:  nil,
+			beforeStatus: pb.MatchStatus_Availabel,
+			beforeMaxNOU: 4,
+			beforeUsers:  []*user.User{user.New(userId), user.New(userId), user.New(userId)},
+			inUser:       user.New(userId),
+			afterStatus:  pb.MatchStatus_Unavailabel,
+			afterUsers:   []*user.User{user.New(userId), user.New(userId), user.New(userId), user.New(userId)},
+			outError:     nil,
 		},
 		{
-			nowStatus: pb.MatchStatus_Unavailabel,
-			nowMaxNOU: 4,
-			nowUsers:  []*user.User{user.New(userId), user.New(userId), user.New(userId), user.New(userId)},
-			inUser:    user.New(userId),
-			outStatus: pb.MatchStatus_Unavailabel,
-			outUsers:  []*user.User{},
-			outError:  MatchUnavailableErr,
+			beforeStatus: pb.MatchStatus_Unavailabel,
+			beforeMaxNOU: 4,
+			beforeUsers:  []*user.User{user.New(userId), user.New(userId), user.New(userId), user.New(userId)},
+			inUser:       user.New(userId),
+			afterStatus:  pb.MatchStatus_Unavailabel,
+			afterUsers:   []*user.User{},
+			outError:     MatchUnavailableErr,
 		},
 	}
 
@@ -58,9 +58,9 @@ func TestJoin(t *testing.T) {
 		channel := make(chan Match)
 		match := MatchImpl{
 			id:               uuid.New(),
-			status:           c.nowStatus,
-			users:            c.nowUsers,
-			maxNumberOfUsers: c.nowMaxNOU,
+			status:           c.beforeStatus,
+			users:            c.beforeUsers,
+			maxNumberOfUsers: c.beforeMaxNOU,
 			channel:          channel,
 		}
 		err := match.JoinUser(c.inUser)
@@ -68,8 +68,8 @@ func TestJoin(t *testing.T) {
 			continue
 		}
 		assert.Equal(t, c.outError, err)
-		assert.Equal(t, c.outStatus, match.status)
-		assert.Equal(t, c.outUsers, match.users)
+		assert.Equal(t, c.afterStatus, match.status)
+		assert.Equal(t, c.afterUsers, match.users)
 		for i := 0; i < len(match.users); i++ {
 			<-match.channel
 		}
@@ -79,40 +79,40 @@ func TestJoin(t *testing.T) {
 func TestLeave(t *testing.T) {
 	userId := uuid.New()
 	cases := []struct {
-		nowStatus pb.MatchStatus
-		nowMaxNOU int
-		nowUsers  []*user.User
-		inUser    *user.User
-		outStatus pb.MatchStatus
-		outUsers  []*user.User
-		outError  error
+		beforeStatus pb.MatchStatus
+		beforeMaxNOU int
+		beforeUsers  []*user.User
+		inUser       *user.User
+		afterStatus  pb.MatchStatus
+		outUsers     []*user.User
+		outError     error
 	}{
 		{
-			nowStatus: pb.MatchStatus_Availabel,
-			nowMaxNOU: 4,
-			nowUsers:  []*user.User{user.New(userId)},
-			inUser:    user.New(userId),
-			outStatus: pb.MatchStatus_Unavailabel,
-			outUsers:  []*user.User{},
-			outError:  nil,
+			beforeStatus: pb.MatchStatus_Availabel,
+			beforeMaxNOU: 4,
+			beforeUsers:  []*user.User{user.New(userId)},
+			inUser:       user.New(userId),
+			afterStatus:  pb.MatchStatus_Unavailabel,
+			outUsers:     []*user.User{},
+			outError:     nil,
 		},
 		{
-			nowStatus: pb.MatchStatus_Availabel,
-			nowMaxNOU: 4,
-			nowUsers:  []*user.User{user.New(userId), user.New(userId), user.New(userId)},
-			inUser:    user.New(userId),
-			outStatus: pb.MatchStatus_Availabel,
-			outUsers:  []*user.User{user.New(userId), user.New(userId)},
-			outError:  nil,
+			beforeStatus: pb.MatchStatus_Availabel,
+			beforeMaxNOU: 4,
+			beforeUsers:  []*user.User{user.New(userId), user.New(userId), user.New(userId)},
+			inUser:       user.New(userId),
+			afterStatus:  pb.MatchStatus_Availabel,
+			outUsers:     []*user.User{user.New(userId), user.New(userId)},
+			outError:     nil,
 		},
 		{
-			nowStatus: pb.MatchStatus_Availabel,
-			nowMaxNOU: 4,
-			nowUsers:  []*user.User{user.New(userId)},
-			inUser:    user.New(uuid.New()),
-			outStatus: pb.MatchStatus_Unavailabel,
-			outUsers:  []*user.User{},
-			outError:  MatchUserNotFound,
+			beforeStatus: pb.MatchStatus_Availabel,
+			beforeMaxNOU: 4,
+			beforeUsers:  []*user.User{user.New(userId)},
+			inUser:       user.New(uuid.New()),
+			afterStatus:  pb.MatchStatus_Unavailabel,
+			outUsers:     []*user.User{},
+			outError:     MatchUserNotFound,
 		},
 	}
 
@@ -121,16 +121,16 @@ func TestLeave(t *testing.T) {
 		match := MatchImpl{
 			channel:          channel,
 			id:               uuid.New(),
-			status:           c.nowStatus,
-			users:            c.nowUsers,
-			maxNumberOfUsers: c.nowMaxNOU,
+			status:           c.beforeStatus,
+			users:            c.beforeUsers,
+			maxNumberOfUsers: c.beforeMaxNOU,
 		}
 		err := match.LeaveUser(c.inUser)
 		if err != nil && err == c.outError {
 			continue
 		}
 		assert.Equal(t, c.outError, err)
-		assert.Equal(t, c.outStatus, match.status)
+		assert.Equal(t, c.afterStatus, match.status)
 		assert.Equal(t, c.outUsers, match.users)
 		for i := 0; i < len(match.users); i++ {
 			<-match.channel
