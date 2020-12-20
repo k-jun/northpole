@@ -136,6 +136,7 @@ func TestLeavePrivateMatch(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// test leave
 	matchIdAndUserId := &pb.MatchIDAndUserID{MatchId: mi.Id, UserId: midAndUid.UserId}
 	mi2, err := client.LeavePrivateMatch(context.Background(), matchIdAndUserId)
 	if err != nil {

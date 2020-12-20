@@ -191,6 +191,10 @@
                 </li>
               
               
+                <li>
+                  <a href="#.MatchStatus"><span class="badge">E</span>MatchStatus</a>
+                </li>
+              
               
               
                 <li>
@@ -262,20 +266,20 @@
               
                 <tr>
                   <td>status</td>
-                  <td><a href="#string">string</a></td>
+                  <td><a href="#MatchStatus">MatchStatus</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>current_number_of_player</td>
+                  <td>current_number_of_users</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>max_number_of_player</td>
+                  <td>max_number_of_users</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p> </p></td>
@@ -305,13 +309,6 @@
                   <td><p> </p></td>
                 </tr>
               
-                <tr>
-                  <td>name</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
             </tbody>
           </table>
 
@@ -320,6 +317,29 @@
         
       
 
+      
+        <h3 id=".MatchStatus">MatchStatus</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>Availabel</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>Unavailabel</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
       
 
       
@@ -341,14 +361,28 @@
               </tr>
             
               <tr>
-                <td>JoinPrivateMatch</td>
+                <td>CreatePrivateMatch</td>
                 <td><a href="#UserInfo">.UserInfo</a></td>
                 <td><a href="#MatchInfo">.MatchInfo</a> stream</td>
                 <td><p></p></td>
               </tr>
             
               <tr>
-                <td>LeaveMatch</td>
+                <td>JoinPrivateMatch</td>
+                <td><a href="#MatchIDAndUserID">.MatchIDAndUserID</a></td>
+                <td><a href="#MatchInfo">.MatchInfo</a> stream</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>LeavePublicMatch</td>
+                <td><a href="#MatchIDAndUserID">.MatchIDAndUserID</a></td>
+                <td><a href="#MatchInfo">.MatchInfo</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>LeavePrivateMatch</td>
                 <td><a href="#MatchIDAndUserID">.MatchIDAndUserID</a></td>
                 <td><a href="#MatchInfo">.MatchInfo</a></td>
                 <td><p></p></td>
