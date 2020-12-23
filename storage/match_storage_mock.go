@@ -4,6 +4,8 @@ import (
 	"northpole/match"
 )
 
+var _ MatchStorage = MatchStorageMock{}
+
 type MatchStorageMock struct {
 	MatchMock match.Match
 	ErrorMock error

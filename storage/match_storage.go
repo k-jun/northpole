@@ -1,7 +1,6 @@
 package storage
 
 import (
-	pb "northpole/grpc"
 	"northpole/match"
 	"sync"
 
@@ -46,7 +45,7 @@ func (ms *matchStorageImpl) FindFirst() (match.Match, error) {
 	defer ms.RUnlock()
 
 	for _, match := range ms.matches {
-		if match.Status() == pb.MatchStatus_Availabel {
+		if match.IsAvailabel() {
 			return match, nil
 		}
 	}

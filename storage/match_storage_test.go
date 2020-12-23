@@ -1,7 +1,7 @@
 package storage
 
 import (
-	pb "northpole/grpc"
+	// pb "northpole/grpc"
 	"northpole/match"
 	"testing"
 
@@ -49,8 +49,8 @@ func TestFind(t *testing.T) {
 func TestFindFirst(t *testing.T) {
 	uuid1 := uuid.New()
 	uuid2 := uuid.New()
-	unavailabel_match := match.MatchMock{StatusMock: pb.MatchStatus_Unavailabel}
-	availabel_match := match.MatchMock{StatusMock: pb.MatchStatus_Availabel}
+	unavailabel_match := match.MatchMock{StatusMock: match.Unavailabel}
+	availabel_match := match.MatchMock{StatusMock: match.Availabel}
 	cases := []struct {
 		beforeMatchs map[uuid.UUID]match.Match
 		outMatch     match.Match
