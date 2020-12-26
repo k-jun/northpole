@@ -1,4 +1,4 @@
-module github.com/k-jun/northpole
+module github.com/k-jun/northpole latest
 
 go 1.13
 
