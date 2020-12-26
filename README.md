@@ -1,35 +1,41 @@
 # northpole
 
-## setup
+simple game matching library in golang
 
-<!-- ```bash -->
-<!-- brew install protobuf -->
-<!-- go get -u github.com/golang/protobuf/protoc-gen-go -->
-<!--  -->
-<!-- # document generate -->
-<!-- go get -u github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc -->
-<!-- protoc --doc_out=html,index.html:./ proto/*.proto -->
-<!-- ``` -->
-<!--  -->
-<!-- ## build  -->
-<!--  -->
-<!-- ```bash -->
-<!-- make build -->
-<!-- ``` -->
-<!--  -->
-<!-- ## format -->
-<!--  -->
-<!-- ```bash -->
-<!-- brew install clang-format -->
-<!-- clang-format -i proto/northpole.proto -->
-<!-- ``` -->
-<!--  -->
-<!-- ## run -->
-<!--  -->
-<!-- ```bash -->
-<!-- go run main.go -->
-<!-- ``` -->
-<!--  -->
-<!-- ## reference -->
-<!--  -->
-<!-- * https://developers.google.com/protocol-buffers/docs/proto3 -->
+## usage
+
+```golang
+package northpole
+
+import (
+	"fmt"
+
+	"github.com/google/uuid"
+	"github.com/k-jun/northpole/room"
+	"github.com/k-jun/northpole/user"
+)
+
+func main() {
+	r := room.New(uuid.New(), 3)
+	u1 := user.New(uuid.New())
+	u2 := user.New(uuid.New())
+	u3 := user.New(uuid.New())
+	m := New()
+	channel, err := m.CreateRoom(u1, r)
+	if err != nil {
+		fmt.Println(err)
+	}
+	channel, err = m.JoinRoom(u2, r)
+	channel, err = m.JoinRoom(u3, r)
+	fmt.Println(r.IsOpen()) // false
+
+	r = <-channel
+	fmt.Println(r) // latest state of the room
+}
+```
+
+check example directory for more information
+
+
+## license
+MIT
