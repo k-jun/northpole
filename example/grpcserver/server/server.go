@@ -1,16 +1,17 @@
 package server
 
 import (
-	match "northpole"
-	"northpole/room"
-	"northpole/storage"
-	"northpole/user"
-	"northpole/utils"
-
-	pb "northpole/example/grpcserver/grpc"
+	"context"
 
 	"github.com/google/uuid"
+	match "github.com/k-jun/northpole"
+	"github.com/k-jun/northpole/room"
+	"github.com/k-jun/northpole/storage"
+	"github.com/k-jun/northpole/user"
+	"github.com/k-jun/northpole/utils"
 	"google.golang.org/grpc"
+
+	pb "grpcserver/grpc"
 )
 
 var (
@@ -31,16 +32,26 @@ func NewServer() *grpc.Server {
 	return grpcServer
 }
 
-func roomToRoomInfo(r room.Room) pb.RoomInfo {
+func roomToRoomInfo(r room.Room) *pb.RoomInfo {
+	status := pb.RoomStatus_Close
+	if r.IsOpen() {
+		status = pb.RoomStatus_Open
+	}
+	return &pb.RoomInfo{
+		Id:                   r.ID().String(),
+		Status:               status,
+		CurrentNumberOfUsers: int64(r.CurrentNumberOfUsers()),
+		MaxNumberOfUsers:     int64(r.MaxNumberOfUsers()),
+	}
 
 }
 
-func (s *northPoleServer) JoinPublicRoom(userInfo *pb.UserInfo, stream pb.NorthPole_JoinPublicRoomServer) error {
-	userId, err := uuid.Parse(userInfo.Id)
+func (s *northPoleServer) JoinPublicRoom(mi *pb.MatchInfo, stream pb.NorthPole_JoinPublicRoomServer) error {
+	uid, err := uuid.Parse(mi.UserId)
 	if err != nil {
 		return err
 	}
-	u := user.New(userId)
+	u := user.New(uid)
 
 	channel, err := s.publicMatch.JoinRandomRoom(u)
 	if err != nil {
@@ -58,100 +69,88 @@ func (s *northPoleServer) JoinPublicRoom(userInfo *pb.UserInfo, stream pb.NorthP
 
 	for {
 		r := <-channel
-		if r.ID() == uuid.Nil {
+		if r == nil {
 			break
 		}
-		stream.Send(nil)
+		stream.Send(roomToRoomInfo(r))
 	}
 	return nil
 }
 
-// func (s *northPoleServer) CreatePrivateRoom(userInfo *pb.UserInfo, stream pb.NorthPole_CreatePrivateRoomServer) error {
-// 	userId, err := uuid.Parse(userInfo.Id)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	u := user.New(userId)
-//
-// 	m, err := s.RoomUsecase.CreatePrivateRoom(u)
-// 	if err != nil {
-// 		return err
-// 	}
-//
-// 	for {
-// 		cm := <-m.Channel()
-// 		if cm.ID() == uuid.Nil {
-// 			break
-// 		}
-// 		stream.Send(cm.RoomInfo())
-// 	}
-// 	return nil
-// }
-//
-// func (s *northPoleServer) JoinPrivateRoom(midAndUid *pb.RoomIDAndUserID, stream pb.NorthPole_JoinPrivateRoomServer) error {
-// 	userId, err := uuid.Parse(midAndUid.UserId)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	u := user.New(userId)
-// 	RoomId, err := uuid.Parse(midAndUid.RoomId)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	m := Room.New(RoomId)
-//
-// 	m, err = s.RoomUsecase.JoinPrivateRoom(u, m)
-// 	if err != nil {
-// 		return err
-// 	}
-//
-// 	for {
-// 		cm := <-m.Channel()
-// 		if cm.ID() == uuid.Nil {
-// 			break
-// 		}
-// 		stream.Send(cm.RoomInfo())
-// 	}
-// 	return nil
-// }
-//
-// func (s *northPoleServer) LeavePublicRoom(ctx context.Context, midAndUid *pb.RoomIDAndUserID) (*pb.RoomInfo, error) {
-// 	userId, err := uuid.Parse(midAndUid.UserId)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	u := user.New(userId)
-// 	RoomId, err := uuid.Parse(midAndUid.RoomId)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	m := Room.New(RoomId)
-//
-// 	m, err = s.RoomUsecase.LeavePublicRoom(u, m)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-//
-// 	return m.RoomInfo(), nil
-// }
-//
-// func (s *northPoleServer) LeavePrivateRoom(ctx context.Context, midAndUid *pb.RoomIDAndUserID) (*pb.RoomInfo, error) {
-// 	userId, err := uuid.Parse(midAndUid.UserId)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	u := user.New(userId)
-// 	RoomId, err := uuid.Parse(midAndUid.RoomId)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	m := Room.New(RoomId)
-//
-// 	m, err = s.RoomUsecase.LeavePrivateRoom(u, m)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-//
-// 	return m.RoomInfo(), nil
-// }
-//
+func (s *northPoleServer) CreatePrivateRoom(rci *pb.RoomCreateInfo, stream pb.NorthPole_CreatePrivateRoomServer) error {
+	uid, err := uuid.Parse(rci.UserId)
+	if err != nil {
+		return err
+	}
+	rid, err := uuid.Parse(rci.RoomId)
+	if err != nil {
+		return err
+	}
+	u := user.New(uid)
+	r := room.New(rid, int(rci.MaxNumberOfUsers))
+
+	channel, err := s.privateMatch.CreateRoom(u, r)
+	if err != nil {
+		return err
+	}
+
+	for {
+		r := <-channel
+		if r == nil {
+			break
+		}
+		stream.Send(roomToRoomInfo(r))
+	}
+	return nil
+}
+
+func (s *northPoleServer) JoinPrivateRoom(mi *pb.MatchInfo, stream pb.NorthPole_JoinPrivateRoomServer) error {
+	uid, err := uuid.Parse(mi.UserId)
+	if err != nil {
+		return err
+	}
+	rid, err := uuid.Parse(mi.RoomId)
+	if err != nil {
+		return err
+	}
+	u := user.New(uid)
+	r := room.New(rid, 0)
+
+	channel, err := s.privateMatch.JoinRoom(u, r)
+	if err != nil {
+		return err
+	}
+
+	for {
+		r := <-channel
+		if r == nil {
+			break
+		}
+		stream.Send(roomToRoomInfo(r))
+	}
+	return nil
+}
+
+func (s *northPoleServer) LeaveRoom(ctx context.Context, mi *pb.MatchInfo) (*pb.Empty, error) {
+	uid, err := uuid.Parse(mi.UserId)
+	if err != nil {
+		return &pb.Empty{}, err
+	}
+	rid, err := uuid.Parse(mi.RoomId)
+	if err != nil {
+		return &pb.Empty{}, err
+	}
+	u := user.New(uid)
+	r := room.New(rid, 0)
+
+	err = s.publicMatch.LeaveRoom(u, r)
+	if err != nil {
+		if err == storage.RoomStorageRoomNotFound {
+			return &pb.Empty{}, s.privateMatch.LeaveRoom(u, r)
+		} else {
+			return &pb.Empty{}, err
+		}
+	}
+
+	return &pb.Empty{}, nil
+}

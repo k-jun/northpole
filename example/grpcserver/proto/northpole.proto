@@ -6,20 +6,17 @@ option go_package = "github.com/k-jun/grpc";
 // package northpole;
 
 service NorthPole {
-  rpc JoinPublicRoom(UserInfo) returns (stream RoomInfo) {}
-  rpc CreatePrivateRoom(UserInfo) returns (stream RoomInfo) {}
-  rpc JoinPrivateRoom(RoomIDAndUserID) returns (stream RoomInfo) {}
-  rpc LeavePublicRoom(RoomIDAndUserID) returns (RoomInfo) {}
-  rpc LeavePrivateRoom(RoomIDAndUserID) returns (RoomInfo) {}
+  rpc JoinPublicRoom(MatchInfo) returns (stream RoomInfo) {}
+  rpc CreatePrivateRoom(RoomCreateInfo) returns (stream RoomInfo) {}
+  rpc JoinPrivateRoom(MatchInfo) returns (stream RoomInfo) {}
+  rpc LeaveRoom(MatchInfo) returns (Empty) {}
 }
+
+message Empty {}
 
 enum RoomStatus {
   Open = 0;
   Close = 1;
-}
-
-message UserInfo {
-  string id = 1;
 }
 
 message RoomInfo {
@@ -29,7 +26,13 @@ message RoomInfo {
   int64 max_number_of_users = 4;
 }
 
-message RoomIDAndUserID {
-  string Room_id = 1;
+message RoomCreateInfo {
+  string room_id = 1;
+  string user_id = 2;
+  int64 max_number_of_users = 3;
+}
+
+message MatchInfo {
+  string room_id = 1;
   string user_id = 2;
 }
