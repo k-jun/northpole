@@ -1,8 +1,9 @@
 package storage
 
 import (
-	"northpole/room"
 	"testing"
+
+	"github.com/k-jun/northpole/room"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"

@@ -1,6 +1,6 @@
 package storage
 
-import "northpole/room"
+import "github.com/k-jun/northpole/room"
 
 var _ RoomStorage = RoomStorageMock{}
 

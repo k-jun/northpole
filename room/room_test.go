@@ -1,8 +1,9 @@
 package room
 
 import (
-	"northpole/user"
 	"testing"
+
+	"github.com/k-jun/northpole/user"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"

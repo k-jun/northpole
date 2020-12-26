@@ -1,8 +1,9 @@
 package room
 
 import (
-	"northpole/user"
 	"sync"
+
+	"github.com/k-jun/northpole/user"
 
 	"github.com/google/uuid"
 )
@@ -19,6 +20,8 @@ type Room interface {
 	JoinUser(u user.User) (chan Room, error)
 	LeaveUser(u user.User) error
 	IsOpen() bool
+	CurrentNumberOfUsers() int
+	MaxNumberOfUsers() int
 }
 
 type roomImpl struct {
@@ -50,6 +53,14 @@ func (m *roomImpl) ID() uuid.UUID {
 
 func (m *roomImpl) IsOpen() bool {
 	return m.status == Open
+}
+
+func (m *roomImpl) CurrentNumberOfUsers() int {
+	return len(m.users)
+}
+
+func (m *roomImpl) MaxNumberOfUsers() int {
+	return m.maxNumberOfUsers
 }
 
 func (m *roomImpl) JoinUser(inUser user.User) (chan Room, error) {

@@ -1,7 +1,7 @@
 package room
 
 import (
-	"northpole/user"
+	"github.com/k-jun/northpole/user"
 
 	"github.com/google/uuid"
 )
@@ -9,14 +9,22 @@ import (
 var _ Room = RoomMock{}
 
 type RoomMock struct {
-	ErrorMock   error
-	StatusMock  RoomStatus
-	IDMock      uuid.UUID
-	ChannelMock chan Room
+	ErrorMock                error
+	StatusMock               RoomStatus
+	IDMock                   uuid.UUID
+	ChannelMock              chan Room
+	CurrentNumberOfUsersMock int
+	MaxNumberOfUsersMock     int
 }
 
 func (m RoomMock) IsOpen() bool {
 	return m.StatusMock == Open
+}
+func (m RoomMock) CurrentNumberOfUsers() int {
+	return m.CurrentNumberOfUsersMock
+}
+func (m RoomMock) MaxNumberOfUsers() int {
+	return m.MaxNumberOfUsersMock
 }
 
 func (m RoomMock) JoinUser(u user.User) (chan Room, error) {

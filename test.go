@@ -1,11 +1,12 @@
-package main
+package northpole
 
 import (
 	"errors"
-	"northpole/room"
-	"northpole/storage"
-	"northpole/user"
 	"testing"
+
+	"github.com/k-jun/northpole/room"
+	"github.com/k-jun/northpole/storage"
+	"github.com/k-jun/northpole/user"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"

@@ -1,8 +1,9 @@
 package storage
 
 import (
-	"northpole/room"
 	"sync"
+
+	"github.com/k-jun/northpole/room"
 
 	"github.com/google/uuid"
 )
