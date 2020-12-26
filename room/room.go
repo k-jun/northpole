@@ -35,15 +35,11 @@ type roomUser struct {
 	c chan Room
 }
 
-var (
-	maxNumberOfUser = 4
-)
-
-func New(id uuid.UUID) Room {
+func New(id uuid.UUID, mnou int) Room {
 	return &roomImpl{
 		id:               id,
 		status:           Open,
-		maxNumberOfUsers: maxNumberOfUser,
+		maxNumberOfUsers: mnou,
 		users:            []*roomUser{},
 	}
 }
@@ -86,8 +82,7 @@ func (m *roomImpl) LeaveUser(outUser user.User) error {
 	for i, ru := range m.users {
 		if ru.u.ID() == outUser.ID() {
 			close(ru.c)
-			m.users[i] = m.users[0]
-			m.users = m.users[1:]
+			m.users = append(m.users[:i], m.users[i+1:]...)
 			found = true
 			break
 		}

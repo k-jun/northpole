@@ -10,7 +10,8 @@ import (
 
 func TestNew(t *testing.T) {
 	testUuid := uuid.New()
-	room := New(testUuid)
+	testMNOU := 4
+	room := New(testUuid, testMNOU)
 	assert.Equal(t, testUuid, room.ID())
 }
 
