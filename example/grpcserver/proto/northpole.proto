@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option go_package = "github.com/k-jun/grpc";
+
+// https://developers.google.com/protocol-buffers/docs/proto3
+// package northpole;
+
+service NorthPole {
+  rpc JoinPublicRoom(UserInfo) returns (stream RoomInfo) {}
+  rpc CreatePrivateRoom(UserInfo) returns (stream RoomInfo) {}
+  rpc JoinPrivateRoom(RoomIDAndUserID) returns (stream RoomInfo) {}
+  rpc LeavePublicRoom(RoomIDAndUserID) returns (RoomInfo) {}
+  rpc LeavePrivateRoom(RoomIDAndUserID) returns (RoomInfo) {}
+}
+
+enum RoomStatus {
+  Open = 0;
+  Close = 1;
+}
+
+message UserInfo {
+  string id = 1;
+}
+
+message RoomInfo {
+  string id = 1;
+  RoomStatus status = 2;
+  int64 current_number_of_users = 3;
+  int64 max_number_of_users = 4;
+}
+
+message RoomIDAndUserID {
+  string Room_id = 1;
+  string user_id = 2;
+}
