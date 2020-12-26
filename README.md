@@ -34,7 +34,7 @@ func main() {
 }
 ```
 
-check example directory for more information
+check examples directory for more information
 
 
 ## license
