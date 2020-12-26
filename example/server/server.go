@@ -1,13 +1,5 @@
 package server
 
-import (
-	"northpole/usecase"
-)
-
-type northPoleServer struct {
-	matchUsecase usecase.MatchUsecase
-}
-
 // func (s *northPoleServer) JoinPublicMatch(userInfo *pb.UserInfo, stream pb.NorthPole_JoinPublicMatchServer) error {
 // 	userId, err := uuid.Parse(userInfo.Id)
 // 	if err != nil {
