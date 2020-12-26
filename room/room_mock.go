@@ -15,6 +15,10 @@ type RoomMock struct {
 	ChannelMock chan Room
 }
 
+func (m RoomMock) IsOpen() bool {
+	return m.StatusMock == Open
+}
+
 func (m RoomMock) JoinUser(u user.User) (chan Room, error) {
 	return m.ChannelMock, m.ErrorMock
 }

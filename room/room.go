@@ -18,6 +18,7 @@ type Room interface {
 	ID() uuid.UUID
 	JoinUser(u user.User) (chan Room, error)
 	LeaveUser(u user.User) error
+	IsOpen() bool
 }
 
 type roomImpl struct {
@@ -49,6 +50,10 @@ func New(id uuid.UUID) Room {
 
 func (m *roomImpl) ID() uuid.UUID {
 	return m.id
+}
+
+func (m *roomImpl) IsOpen() bool {
+	return m.status == Open
 }
 
 func (m *roomImpl) JoinUser(inUser user.User) (chan Room, error) {
