@@ -35,7 +35,7 @@ func TestCreateRoom(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		m := MatchImpl{roomStorage: c.beforeRoomStorage}
+		m := matchImpl{roomStorage: c.beforeRoomStorage}
 
 		_, err := m.CreateRoom(c.inUser, c.inRoom)
 		assert.Equal(t, c.outError, err)
@@ -72,7 +72,7 @@ func TestJoinRoom(t *testing.T) {
 
 	for _, c := range cases {
 
-		m := MatchImpl{roomStorage: c.beforeRoomStorage}
+		m := matchImpl{roomStorage: c.beforeRoomStorage}
 		_, err := m.JoinRoom(c.inUser, c.inRoom)
 		assert.Equal(t, c.outError, err)
 	}
@@ -104,7 +104,7 @@ func TestJoinRandomRoom(t *testing.T) {
 
 	for _, c := range cases {
 
-		m := MatchImpl{roomStorage: c.beforeRoomStorage}
+		m := matchImpl{roomStorage: c.beforeRoomStorage}
 		_, err := m.JoinRandomRoom(c.inUser)
 		assert.Equal(t, c.outError, err)
 	}
@@ -140,7 +140,7 @@ func TestLeaveRoom(t *testing.T) {
 
 	for _, c := range cases {
 
-		m := MatchImpl{roomStorage: c.beforeRoomStorage}
+		m := matchImpl{roomStorage: c.beforeRoomStorage}
 		err := m.LeaveRoom(c.inUser, c.inRoom)
 		assert.Equal(t, c.outError, err)
 	}
