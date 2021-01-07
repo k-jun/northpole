@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	r := room.New(uuid.New(), 3)
+	r := room.New(uuid.New(), 3, func(_ uuid.UUID) error { return nil })
 	u1 := user.New(uuid.New())
 	u2 := user.New(uuid.New())
 	u3 := user.New(uuid.New())
