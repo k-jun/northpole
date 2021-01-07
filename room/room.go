@@ -31,6 +31,7 @@ type roomImpl struct {
 	status           RoomStatus
 	maxNumberOfUsers int
 	users            []*roomUser
+	callback         func(uuid.UUID) error
 }
 
 type roomUser struct {
@@ -38,12 +39,13 @@ type roomUser struct {
 	c chan Room
 }
 
-func New(id uuid.UUID, mnou int) Room {
+func New(id uuid.UUID, mnou int, callback func(uuid.UUID) error) Room {
 	return &roomImpl{
 		id:               id,
 		status:           Open,
 		maxNumberOfUsers: mnou,
 		users:            []*roomUser{},
+		callback:         callback,
 	}
 }
 
@@ -74,6 +76,13 @@ func (m *roomImpl) JoinUser(inUser user.User) (chan Room, error) {
 	channel := make(chan Room, m.maxNumberOfUsers)
 	m.users = append(m.users, &roomUser{u: inUser, c: channel})
 	if len(m.users) >= m.maxNumberOfUsers {
+		if err := m.callback(m.id); err != nil {
+			// let leave all users
+			for _, ru := range m.users {
+				close(ru.c)
+			}
+			return nil, RoomCallbackErr
+		}
 		m.status = Close
 	}
 

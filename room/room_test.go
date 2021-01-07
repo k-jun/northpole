@@ -1,6 +1,7 @@
 package room
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/k-jun/northpole/user"
@@ -12,7 +13,8 @@ import (
 func TestNew(t *testing.T) {
 	testUuid := uuid.New()
 	testMNOU := 4
-	room := New(testUuid, testMNOU)
+	testCallback := func(id uuid.UUID) error { return nil }
+	room := New(testUuid, testMNOU, testCallback)
 	assert.Equal(t, testUuid, room.ID())
 }
 
@@ -23,6 +25,7 @@ func TestJoinUser(t *testing.T) {
 		beforeUsers            []*roomUser
 		beforeStatus           RoomStatus
 		beforeMaxNumberOfUsers int
+		beforeCallback         func(uuid.UUID) error
 		inUser                 user.User
 		afterUsers             []*roomUser
 		afterStatus            RoomStatus
@@ -53,11 +56,23 @@ func TestJoinUser(t *testing.T) {
 			beforeUsers:            []*roomUser{mockRoomUser(testUser)},
 			beforeStatus:           Open,
 			beforeMaxNumberOfUsers: 2,
+			beforeCallback:         func(id uuid.UUID) error { return nil },
 			inUser:                 testUser,
 			afterUsers:             []*roomUser{mockRoomUser(testUser), mockRoomUser(testUser)},
 			afterStatus:            Close,
 			outChannel:             nil,
 			outError:               nil,
+		},
+		{
+			beforeUsers:            []*roomUser{mockRoomUser(testUser)},
+			beforeStatus:           Open,
+			beforeMaxNumberOfUsers: 2,
+			beforeCallback:         func(id uuid.UUID) error { return errors.New("") },
+			inUser:                 testUser,
+			afterUsers:             []*roomUser{mockRoomUser(testUser), mockRoomUser(testUser)},
+			afterStatus:            Open,
+			outChannel:             nil,
+			outError:               RoomCallbackErr,
 		},
 	}
 
@@ -66,6 +81,7 @@ func TestJoinUser(t *testing.T) {
 			status:           c.beforeStatus,
 			users:            c.beforeUsers,
 			maxNumberOfUsers: c.beforeMaxNumberOfUsers,
+			callback:         c.beforeCallback,
 		}
 		_, err := room.JoinUser(c.inUser)
 		assert.Equal(t, c.outError, err)
