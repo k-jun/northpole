@@ -16,10 +16,10 @@ import (
 )
 
 func main() {
-	r := room.New(uuid.New(), 3, func(_ uuid.UUID) error { return nil })
-	u1 := user.New(uuid.New())
-	u2 := user.New(uuid.New())
-	u3 := user.New(uuid.New())
+	r := room.New(uuid.New().String(), 3, func(_ string) error { return nil })
+	u1 := user.New(uuid.New().String())
+	u2 := user.New(uuid.New().String())
+	u3 := user.New(uuid.New().String())
 	m := New()
 	channel, err := m.CreateRoom(u1, r)
 	if err != nil {
