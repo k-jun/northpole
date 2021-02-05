@@ -2,8 +2,6 @@ package room
 
 import (
 	"github.com/k-jun/northpole/user"
-
-	"github.com/google/uuid"
 )
 
 var _ Room = RoomMock{}
@@ -11,7 +9,7 @@ var _ Room = RoomMock{}
 type RoomMock struct {
 	ErrorMock                error
 	StatusMock               RoomStatus
-	IDMock                   uuid.UUID
+	IDMock                   string
 	ChannelMock              chan Room
 	CurrentNumberOfUsersMock int
 	MaxNumberOfUsersMock     int
@@ -35,6 +33,6 @@ func (m RoomMock) LeaveUser(u user.User) error {
 	return m.ErrorMock
 }
 
-func (m RoomMock) ID() uuid.UUID {
+func (m RoomMock) ID() string {
 	return m.IDMock
 }

@@ -8,12 +8,11 @@ import (
 	"github.com/k-jun/northpole/storage"
 	"github.com/k-jun/northpole/user"
 
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateRoom(t *testing.T) {
-	uuid1 := uuid.New()
+	uuid1 := "c7fba570-12a2-343e-98de-028e91c410da"
 	cases := []struct {
 		inUser            user.User
 		inRoom            room.Room
@@ -43,7 +42,7 @@ func TestCreateRoom(t *testing.T) {
 }
 
 func TestJoinRoom(t *testing.T) {
-	uuid1 := uuid.New()
+	uuid1 := "439f9aa5-b7aa-33c7-b423-7d6f9843d158"
 	cases := []struct {
 		inUser            user.User
 		inRoom            room.Room
@@ -79,7 +78,7 @@ func TestJoinRoom(t *testing.T) {
 }
 
 func TestJoinRandomRoom(t *testing.T) {
-	uuid1 := uuid.New()
+	uuid1 := "b37107d5-58e3-30f7-a66a-3f3acb185cb0"
 	cases := []struct {
 		inUser            user.User
 		beforeRoomStorage storage.RoomStorage
@@ -111,7 +110,7 @@ func TestJoinRandomRoom(t *testing.T) {
 }
 
 func TestLeaveRoom(t *testing.T) {
-	uuid1 := uuid.New()
+	uuid1 := "27d6f505-7fb7-36ff-8a43-587864cf9b42"
 	cases := []struct {
 		inUser            user.User
 		inRoom            room.Room

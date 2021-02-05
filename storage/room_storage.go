@@ -4,8 +4,6 @@ import (
 	"sync"
 
 	"github.com/k-jun/northpole/room"
-
-	"github.com/google/uuid"
 )
 
 type RoomStorage interface {
@@ -17,12 +15,12 @@ type RoomStorage interface {
 
 type RoomStorageImpl struct {
 	sync.RWMutex
-	rooms map[uuid.UUID]room.Room
+	rooms map[string]room.Room
 }
 
 func NewRoomStorage() RoomStorage {
 	return &RoomStorageImpl{
-		rooms: map[uuid.UUID]room.Room{},
+		rooms: map[string]room.Room{},
 	}
 }
 
@@ -30,7 +28,7 @@ func (ms *RoomStorageImpl) Find(m room.Room) (room.Room, error) {
 	ms.RLock()
 	defer ms.RUnlock()
 
-	if m.ID() == uuid.Nil {
+	if m.ID() == "" {
 		return nil, RoomStorageBadParameter
 	}
 	m = ms.rooms[m.ID()]

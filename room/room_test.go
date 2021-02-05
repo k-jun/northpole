@@ -6,26 +6,25 @@ import (
 
 	"github.com/k-jun/northpole/user"
 
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNew(t *testing.T) {
-	testUuid := uuid.New()
+	testUuid := "3e6d0139-5fc7-39f8-aecd-15ae26bec824"
 	testMNOU := 4
-	testCallback := func(id uuid.UUID) error { return nil }
+	testCallback := func(id string) error { return nil }
 	room := New(testUuid, testMNOU, testCallback)
 	assert.Equal(t, testUuid, room.ID())
 }
 
 func TestJoinUser(t *testing.T) {
-	testUser := &user.UserMock{IdMock: uuid.New()}
+	testUser := &user.UserMock{IdMock: "b5f89105-d69d-3ce3-8bc0-0c7816990e7d"}
 	testRoomUser := &roomUser{u: testUser, c: nil}
 	cases := []struct {
 		beforeUsers            []*roomUser
 		beforeStatus           RoomStatus
 		beforeMaxNumberOfUsers int
-		beforeCallback         func(uuid.UUID) error
+		beforeCallback         func(string) error
 		inUser                 user.User
 		afterUsers             []*roomUser
 		afterStatus            RoomStatus
@@ -56,7 +55,7 @@ func TestJoinUser(t *testing.T) {
 			beforeUsers:            []*roomUser{mockRoomUser(testUser)},
 			beforeStatus:           Open,
 			beforeMaxNumberOfUsers: 2,
-			beforeCallback:         func(id uuid.UUID) error { return nil },
+			beforeCallback:         func(id string) error { return nil },
 			inUser:                 testUser,
 			afterUsers:             []*roomUser{mockRoomUser(testUser), mockRoomUser(testUser)},
 			afterStatus:            Close,
@@ -67,7 +66,7 @@ func TestJoinUser(t *testing.T) {
 			beforeUsers:            []*roomUser{mockRoomUser(testUser)},
 			beforeStatus:           Open,
 			beforeMaxNumberOfUsers: 2,
-			beforeCallback:         func(id uuid.UUID) error { return errors.New("") },
+			beforeCallback:         func(id string) error { return errors.New("") },
 			inUser:                 testUser,
 			afterUsers:             []*roomUser{mockRoomUser(testUser), mockRoomUser(testUser)},
 			afterStatus:            Open,
@@ -93,7 +92,7 @@ func TestJoinUser(t *testing.T) {
 }
 
 func TestLeaveUser(t *testing.T) {
-	testUser := &user.UserMock{IdMock: uuid.New()}
+	testUser := &user.UserMock{IdMock: "08762cea-6e16-3424-a2bc-664790fefa2a"}
 	noExistUser := &user.UserMock{}
 	cases := []struct {
 		beforeUsers            []*roomUser
@@ -163,8 +162,8 @@ func TestLeaveUser(t *testing.T) {
 }
 
 func TestJoinUserBroadcast(t *testing.T) {
-	testUser1 := &user.UserMock{IdMock: uuid.New()}
-	testUser2 := &user.UserMock{IdMock: uuid.New()}
+	testUser1 := &user.UserMock{IdMock: "3d8b173a-b5a5-360a-a07a-582535995e13"}
+	testUser2 := &user.UserMock{IdMock: "0c2551b4-e653-3db7-b522-9195b41c9dab"}
 	channel1 := make(chan Room)
 	testRoomUser := &roomUser{u: testUser1, c: channel1}
 	cases := []struct {
@@ -191,8 +190,8 @@ func TestJoinUserBroadcast(t *testing.T) {
 }
 
 func TestLeaveUserBroadcast(t *testing.T) {
-	testUser1 := &user.UserMock{IdMock: uuid.New()}
-	testUser2 := &user.UserMock{IdMock: uuid.New()}
+	testUser1 := &user.UserMock{IdMock: "5bbe0676-86ad-342c-96c5-89c2dd688e15"}
+	testUser2 := &user.UserMock{IdMock: "0b058f2e-44ef-304f-a858-dd550182a93e"}
 	channel1 := make(chan Room)
 	channel2 := make(chan Room)
 	testRoomUser1 := &roomUser{u: testUser1, c: channel1}

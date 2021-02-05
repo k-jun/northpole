@@ -1,14 +1,12 @@
 package user
 
-import "github.com/google/uuid"
-
 var _ User = &UserMock{}
 
 type UserMock struct {
-	IdMock    uuid.UUID
+	IdMock    string
 	ErrorMock error
 }
 
-func (u *UserMock) ID() uuid.UUID {
+func (u *UserMock) ID() string {
 	return u.IdMock
 }

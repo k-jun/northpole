@@ -1,22 +1,18 @@
 package user
 
-import (
-	"github.com/google/uuid"
-)
-
 type User interface {
-	ID() uuid.UUID
+	ID() string
 }
 
 type UserImpl struct {
-	id uuid.UUID
+	id string
 }
 
-func (u *UserImpl) ID() uuid.UUID {
+func (u *UserImpl) ID() string {
 	return u.id
 }
 
-func New(id uuid.UUID) User {
+func New(id string) User {
 	return &UserImpl{
 		id: id,
 	}

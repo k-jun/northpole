@@ -4,8 +4,6 @@ import (
 	"sync"
 
 	"github.com/k-jun/northpole/user"
-
-	"github.com/google/uuid"
 )
 
 type RoomStatus string
@@ -16,7 +14,7 @@ var (
 )
 
 type Room interface {
-	ID() uuid.UUID
+	ID() string
 	JoinUser(u user.User) (chan Room, error)
 	LeaveUser(u user.User) error
 	IsOpen() bool
@@ -27,11 +25,11 @@ type Room interface {
 type roomImpl struct {
 	sync.Mutex
 
-	id               uuid.UUID
+	id               string
 	status           RoomStatus
 	maxNumberOfUsers int
 	users            []*roomUser
-	callback         func(uuid.UUID) error
+	callback         func(string) error
 }
 
 type roomUser struct {
@@ -39,7 +37,7 @@ type roomUser struct {
 	c chan Room
 }
 
-func New(id uuid.UUID, mnou int, callback func(uuid.UUID) error) Room {
+func New(id string, mnou int, callback func(string) error) Room {
 	return &roomImpl{
 		id:               id,
 		status:           Open,
@@ -49,7 +47,7 @@ func New(id uuid.UUID, mnou int, callback func(uuid.UUID) error) Room {
 	}
 }
 
-func (m *roomImpl) ID() uuid.UUID {
+func (m *roomImpl) ID() string {
 	return m.id
 }
 
