@@ -7,3 +7,8 @@ build:
 docs:
 	protoc --doc_out=html,index.html:./ proto/*.proto
 	open index.html
+
+.PHONY: test
+test:
+	 go test -v ./...
+

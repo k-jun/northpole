@@ -3,12 +3,13 @@ package server
 import (
 	"context"
 
+	"grpcserver/utils"
+
 	"github.com/google/uuid"
 	match "github.com/k-jun/northpole"
 	"github.com/k-jun/northpole/room"
 	"github.com/k-jun/northpole/storage"
 	"github.com/k-jun/northpole/user"
-	"github.com/k-jun/northpole/utils"
 	"google.golang.org/grpc"
 
 	pb "grpcserver/grpc"
@@ -38,7 +39,7 @@ func roomToRoomInfo(r room.Room) *pb.RoomInfo {
 		status = pb.RoomStatus_Open
 	}
 	return &pb.RoomInfo{
-		Id:                   r.ID().String(),
+		Id:                   r.ID(),
 		Status:               status,
 		CurrentNumberOfUsers: int64(r.CurrentNumberOfUsers()),
 		MaxNumberOfUsers:     int64(r.MaxNumberOfUsers()),
@@ -51,13 +52,13 @@ func (s *northPoleServer) JoinPublicRoom(mi *pb.MatchInfo, stream pb.NorthPole_J
 	if err != nil {
 		return err
 	}
-	u := user.New(uid)
+	u := user.New(uid.String())
 
 	channel, err := s.publicMatch.JoinRandomRoom(u)
 	if err != nil {
 		if err == storage.RoomStorageRoomNotFound {
 			nid := utils.NewUUID()
-			r := room.New(nid, deafultMNOU)
+			r := room.New(nid.String(), deafultMNOU, func(_ string) error { return nil })
 			channel, err = s.publicMatch.CreateRoom(u, r)
 			if err != nil {
 				return err
@@ -86,8 +87,8 @@ func (s *northPoleServer) CreatePrivateRoom(rci *pb.RoomCreateInfo, stream pb.No
 	if err != nil {
 		return err
 	}
-	u := user.New(uid)
-	r := room.New(rid, int(rci.MaxNumberOfUsers))
+	u := user.New(uid.String())
+	r := room.New(rid.String(), int(rci.MaxNumberOfUsers), func(_ string) error { return nil })
 
 	channel, err := s.privateMatch.CreateRoom(u, r)
 	if err != nil {
@@ -113,8 +114,8 @@ func (s *northPoleServer) JoinPrivateRoom(mi *pb.MatchInfo, stream pb.NorthPole_
 	if err != nil {
 		return err
 	}
-	u := user.New(uid)
-	r := room.New(rid, 0)
+	u := user.New(uid.String())
+	r := room.New(rid.String(), 0, func(_ string) error { return nil })
 
 	channel, err := s.privateMatch.JoinRoom(u, r)
 	if err != nil {
@@ -140,8 +141,8 @@ func (s *northPoleServer) LeaveRoom(ctx context.Context, mi *pb.MatchInfo) (*pb.
 	if err != nil {
 		return &pb.Empty{}, err
 	}
-	u := user.New(uid)
-	r := room.New(rid, 0)
+	u := user.New(uid.String())
+	r := room.New(rid.String(), 0, func(_ string) error { return nil })
 
 	err = s.publicMatch.LeaveRoom(u, r)
 	if err != nil {
