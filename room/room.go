@@ -77,17 +77,22 @@ func (m *roomImpl) JoinUser(inUser user.User) (chan Room, error) {
 	channel := make(chan Room, m.maxNumberOfUsers)
 	m.users = append(m.users, &roomUser{u: inUser, c: channel})
 	if len(m.users) >= m.maxNumberOfUsers {
-		if err := m.callback(m.id); err != nil {
-			// let all users leave
-			for _, ru := range m.users {
-				close(ru.c)
+		if m.callback != nil {
+			if err := m.callback(m.id); err != nil {
+				return nil, RoomCallbackErr
 			}
-			return nil, RoomCallbackErr
+		}
+		// let all users leave
+		for _, ru := range m.users {
+			close(ru.c)
 		}
 		m.status = Close
 	}
 
-	go m.broadcast(*m)
+	if m.status == Open {
+		go m.broadcast(*m)
+	}
+
 	return channel, nil
 }
 
@@ -122,12 +127,14 @@ func (m *roomImpl) LeaveUser(outUser user.User) error {
 }
 
 func (m *roomImpl) CloseRoom() error {
-	if err := m.callback(m.id); err != nil {
-		// let all users leave
-		for _, ru := range m.users {
-			close(ru.c)
+	if m.callback != nil {
+		if err := m.callback(m.id); err != nil {
+			return RoomCallbackErr
 		}
-		return RoomCallbackErr
+	}
+	// let all users leave
+	for _, ru := range m.users {
+		close(ru.c)
 	}
 	m.status = Close
 	return nil
