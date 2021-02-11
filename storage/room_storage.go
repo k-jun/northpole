@@ -24,19 +24,19 @@ func NewRoomStorage() RoomStorage {
 	}
 }
 
-func (ms *RoomStorageImpl) Find(m room.Room) (room.Room, error) {
+func (ms *RoomStorageImpl) Find(r room.Room) (room.Room, error) {
 	ms.RLock()
 	defer ms.RUnlock()
 
-	if m.ID() == "" {
+	if r.ID() == "" {
 		return nil, RoomStorageBadParameter
 	}
-	m = ms.rooms[m.ID()]
-	if m == nil {
+	r = ms.rooms[r.ID()]
+	if r == nil {
 		return nil, RoomStorageRoomNotFound
 	}
 
-	return m, nil
+	return r, nil
 }
 
 func (ms *RoomStorageImpl) FindFirst() (room.Room, error) {
@@ -51,26 +51,26 @@ func (ms *RoomStorageImpl) FindFirst() (room.Room, error) {
 	return nil, RoomStorageRoomNotFound
 }
 
-func (ms *RoomStorageImpl) Add(m room.Room) error {
+func (ms *RoomStorageImpl) Add(r room.Room) error {
 	ms.Lock()
 	defer ms.Unlock()
 
-	if ms.rooms[m.ID()] != nil {
+	if ms.rooms[r.ID()] != nil {
 		return RoomStorageRoomAlreadyExistErr
 	}
-	ms.rooms[m.ID()] = m
+	ms.rooms[r.ID()] = r
 
 	return nil
 }
 
-func (ms *RoomStorageImpl) Remove(m room.Room) error {
+func (ms *RoomStorageImpl) Remove(r room.Room) error {
 	ms.Lock()
 	defer ms.Unlock()
 
-	if ms.rooms[m.ID()] == nil {
+	if ms.rooms[r.ID()] == nil {
 		return RoomStorageRoomNotFound
 	}
-	delete(ms.rooms, m.ID())
+	delete(ms.rooms, r.ID())
 
 	return nil
 }

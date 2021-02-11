@@ -50,5 +50,13 @@ func (np *matchImpl) LeaveRoom(u user.User, r room.Room) error {
 	if err != nil {
 		return err
 	}
-	return r.LeaveUser(u)
+	err = r.LeaveUser(u)
+	if err != nil {
+		return err
+	}
+
+	if !r.IsOpen() {
+		return np.roomStorage.Remove(r)
+	}
+	return nil
 }

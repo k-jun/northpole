@@ -17,6 +17,9 @@ type Room interface {
 	ID() string
 	JoinUser(u user.User) (chan Room, error)
 	LeaveUser(u user.User) error
+	CloseRoom() error
+
+	// getter
 	IsOpen() bool
 	CurrentNumberOfUsers() int
 	MaxNumberOfUsers() int
@@ -75,7 +78,7 @@ func (m *roomImpl) JoinUser(inUser user.User) (chan Room, error) {
 	m.users = append(m.users, &roomUser{u: inUser, c: channel})
 	if len(m.users) >= m.maxNumberOfUsers {
 		if err := m.callback(m.id); err != nil {
-			// let leave all users
+			// let all users leave
 			for _, ru := range m.users {
 				close(ru.c)
 			}
@@ -115,6 +118,18 @@ func (m *roomImpl) LeaveUser(outUser user.User) error {
 		go m.broadcast(*m)
 	}
 
+	return nil
+}
+
+func (m *roomImpl) CloseRoom() error {
+	if err := m.callback(m.id); err != nil {
+		// let all users leave
+		for _, ru := range m.users {
+			close(ru.c)
+		}
+		return RoomCallbackErr
+	}
+	m.status = Close
 	return nil
 }
 
