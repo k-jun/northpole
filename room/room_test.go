@@ -21,6 +21,7 @@ func TestJoinUser(t *testing.T) {
 	testUser := &user.UserMock{IdMock: "b5f89105-d69d-3ce3-8bc0-0c7816990e7d"}
 	testRoomUser := &roomUser{u: testUser, c: nil}
 	cases := []struct {
+		name                   string
 		beforeUsers            []*roomUser
 		beforeStatus           RoomStatus
 		beforeMaxNumberOfUsers int
@@ -32,26 +33,26 @@ func TestJoinUser(t *testing.T) {
 		outError               error
 	}{
 		{
+			name:                   "success",
 			beforeUsers:            []*roomUser{},
 			beforeStatus:           Open,
 			beforeMaxNumberOfUsers: 4,
 			inUser:                 testUser,
 			afterUsers:             []*roomUser{testRoomUser},
 			afterStatus:            Open,
-			outChannel:             nil,
-			outError:               nil,
 		},
 		{
+			name:                   "failure: room close",
 			beforeUsers:            []*roomUser{mockRoomUser(testUser), mockRoomUser(testUser), mockRoomUser(testUser)},
 			beforeStatus:           Close,
 			beforeMaxNumberOfUsers: 3,
 			inUser:                 testUser,
 			afterUsers:             []*roomUser{mockRoomUser(testUser), mockRoomUser(testUser), mockRoomUser(testUser)},
 			afterStatus:            Close,
-			outChannel:             nil,
 			outError:               RoomCloseErr,
 		},
 		{
+			name:                   "success: room is full",
 			beforeUsers:            []*roomUser{mockRoomUser(testUser)},
 			beforeStatus:           Open,
 			beforeMaxNumberOfUsers: 2,
@@ -59,10 +60,9 @@ func TestJoinUser(t *testing.T) {
 			inUser:                 testUser,
 			afterUsers:             []*roomUser{mockRoomUser(testUser), mockRoomUser(testUser)},
 			afterStatus:            Close,
-			outChannel:             nil,
-			outError:               nil,
 		},
 		{
+			name:                   "failure: callback is failed",
 			beforeUsers:            []*roomUser{mockRoomUser(testUser)},
 			beforeStatus:           Open,
 			beforeMaxNumberOfUsers: 2,
@@ -76,18 +76,20 @@ func TestJoinUser(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		room := roomImpl{
-			status:           c.beforeStatus,
-			users:            c.beforeUsers,
-			maxNumberOfUsers: c.beforeMaxNumberOfUsers,
-			callback:         c.beforeCallback,
-		}
-		_, err := room.JoinUser(c.inUser)
-		assert.Equal(t, c.outError, err)
-		assert.Equal(t, c.afterStatus, room.status)
-		for i, ru := range room.users {
-			assert.Equal(t, c.afterUsers[i].u, ru.u)
-		}
+		t.Run(c.name, func(t *testing.T) {
+			room := roomImpl{
+				status:           c.beforeStatus,
+				users:            c.beforeUsers,
+				maxNumberOfUsers: c.beforeMaxNumberOfUsers,
+				callback:         c.beforeCallback,
+			}
+			_, err := room.JoinUser(c.inUser)
+			assert.Equal(t, c.outError, err)
+			assert.Equal(t, c.afterStatus, room.status)
+			for i, ru := range room.users {
+				assert.Equal(t, c.afterUsers[i].u, ru.u)
+			}
+		})
 	}
 }
 
@@ -95,6 +97,7 @@ func TestLeaveUser(t *testing.T) {
 	testUser := &user.UserMock{IdMock: "08762cea-6e16-3424-a2bc-664790fefa2a"}
 	noExistUser := &user.UserMock{}
 	cases := []struct {
+		name                   string
 		beforeUsers            []*roomUser
 		beforeStatus           RoomStatus
 		beforeMaxNumberOfUsers int
@@ -105,6 +108,7 @@ func TestLeaveUser(t *testing.T) {
 		outError               error
 	}{
 		{
+			name:                   "success: 2 -> 1",
 			beforeUsers:            []*roomUser{mockRoomUser(testUser), mockRoomUser(testUser)},
 			beforeStatus:           Open,
 			beforeMaxNumberOfUsers: 4,
@@ -115,6 +119,7 @@ func TestLeaveUser(t *testing.T) {
 			outError:               nil,
 		},
 		{
+			name:                   "failure: room close",
 			beforeUsers:            []*roomUser{},
 			beforeStatus:           Close,
 			beforeMaxNumberOfUsers: 1,
@@ -125,16 +130,16 @@ func TestLeaveUser(t *testing.T) {
 			outError:               RoomCloseErr,
 		},
 		{
+			name:                   "success: 1 -> 0",
 			beforeUsers:            []*roomUser{mockRoomUser(testUser)},
 			beforeStatus:           Open,
 			beforeMaxNumberOfUsers: 2,
 			inUser:                 testUser,
 			afterUsers:             []*roomUser{},
 			afterStatus:            Close,
-			outChannel:             nil,
-			outError:               nil,
 		},
 		{
+			name:                   "failure: room user not found",
 			beforeUsers:            []*roomUser{mockRoomUser(testUser), mockRoomUser(testUser)},
 			beforeStatus:           Open,
 			beforeMaxNumberOfUsers: 3,
@@ -147,17 +152,19 @@ func TestLeaveUser(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		room := roomImpl{
-			status:           c.beforeStatus,
-			users:            c.beforeUsers,
-			maxNumberOfUsers: c.beforeMaxNumberOfUsers,
-		}
-		err := room.LeaveUser(c.inUser)
-		assert.Equal(t, c.outError, err)
-		assert.Equal(t, c.afterStatus, room.status)
-		for i, ru := range room.users {
-			assert.Equal(t, c.afterUsers[i].u, ru.u)
-		}
+		t.Run(c.name, func(t *testing.T) {
+			room := roomImpl{
+				status:           c.beforeStatus,
+				users:            c.beforeUsers,
+				maxNumberOfUsers: c.beforeMaxNumberOfUsers,
+			}
+			err := room.LeaveUser(c.inUser)
+			assert.Equal(t, c.outError, err)
+			assert.Equal(t, c.afterStatus, room.status)
+			for i, ru := range room.users {
+				assert.Equal(t, c.afterUsers[i].u, ru.u)
+			}
+		})
 	}
 }
 
@@ -183,6 +190,7 @@ func TestJoinUserBroadcast(t *testing.T) {
 			maxNumberOfUsers: 10,
 		}
 		channel2, _ := room.JoinUser(c.inUser)
+		// fmt.Println("err:", err)
 		room1 := <-channel1
 		room2 := <-channel2
 		assert.Equal(t, room1, room2)
@@ -220,6 +228,41 @@ func TestLeaveUserBroadcast(t *testing.T) {
 		assert.Equal(t, room1.ID(), room.ID())
 		assert.Equal(t, nil, room2)
 	}
+}
+
+func TestRoomClose(t *testing.T) {
+	testUser1 := &user.UserMock{IdMock: "20665a49-c52a-3d65-96b4-cfbc456e9031"}
+	testUser2 := &user.UserMock{IdMock: "0eea27e9-65a4-33e3-93f5-ef12a42ccaee"}
+	channel1 := make(chan Room)
+	channel2 := make(chan Room)
+	testRoomUser1 := &roomUser{u: testUser1, c: channel1}
+	testRoomUser2 := &roomUser{u: testUser2, c: channel2}
+	cases := []struct {
+		beforeUsers []*roomUser
+		afterStatus RoomStatus
+	}{
+		{
+			beforeUsers: []*roomUser{testRoomUser1, testRoomUser2},
+			afterStatus: Close,
+		},
+	}
+
+	for _, c := range cases {
+		room := &roomImpl{
+			status:           Open,
+			users:            c.beforeUsers,
+			maxNumberOfUsers: 10,
+		}
+		_ = room.CloseRoom()
+		room1 := <-channel1
+		room2 := <-channel2
+
+		// can't compare as mutex state
+		assert.Equal(t, nil, room1)
+		assert.Equal(t, nil, room2)
+
+	}
+
 }
 
 func mockRoomUser(u user.User) *roomUser {

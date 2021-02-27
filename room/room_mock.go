@@ -15,24 +15,29 @@ type RoomMock struct {
 	MaxNumberOfUsersMock     int
 }
 
-func (m RoomMock) IsOpen() bool {
-	return m.StatusMock == Open
+func (r RoomMock) IsOpen() bool {
+	return r.StatusMock == Open
 }
-func (m RoomMock) CurrentNumberOfUsers() int {
-	return m.CurrentNumberOfUsersMock
+func (r RoomMock) CurrentNumberOfUsers() int {
+	return r.CurrentNumberOfUsersMock
 }
-func (m RoomMock) MaxNumberOfUsers() int {
-	return m.MaxNumberOfUsersMock
-}
-
-func (m RoomMock) JoinUser(u user.User) (chan Room, error) {
-	return m.ChannelMock, m.ErrorMock
+func (r RoomMock) MaxNumberOfUsers() int {
+	return r.MaxNumberOfUsersMock
 }
 
-func (m RoomMock) LeaveUser(u user.User) error {
-	return m.ErrorMock
+func (r RoomMock) JoinUser(u user.User) (chan Room, error) {
+	return r.ChannelMock, r.ErrorMock
 }
 
-func (m RoomMock) ID() string {
-	return m.IDMock
+func (r RoomMock) LeaveUser(u user.User) error {
+	return r.ErrorMock
+}
+
+func (r RoomMock) CloseRoom() error {
+	return r.ErrorMock
+
+}
+
+func (r RoomMock) ID() string {
+	return r.IDMock
 }
