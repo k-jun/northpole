@@ -137,7 +137,7 @@ func (m *roomImpl) CloseRoom() error {
 	return nil
 }
 
-func (m *roomImpl) broadcast(room roomImpl) {
+func (m *roomImpl) broadcast() {
 	// TODO check valiables address
 	for i := 0; i < len(m.users); i++ {
 		m.users[i].c <- m
