@@ -82,14 +82,15 @@ func (m *roomImpl) JoinUser(inUser user.User) (chan Room, error) {
 				return nil, RoomCallbackErr
 			}
 		}
+		m.status = Close
 		// let all users leave
 		for _, ru := range m.users {
 			close(ru.c)
 		}
-		m.status = Close
+	} else {
+		m.broadcast()
 	}
 
-	go m.broadcast()
 	return channel, nil
 }
 
@@ -138,7 +139,9 @@ func (m *roomImpl) CloseRoom() error {
 }
 
 func (m *roomImpl) broadcast() {
-	// TODO check valiables address
+	if m.status == Close {
+		return 
+	}
 	for i := 0; i < len(m.users); i++ {
 		m.users[i].c <- m
 	}
