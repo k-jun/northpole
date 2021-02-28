@@ -171,7 +171,7 @@ func TestLeaveUser(t *testing.T) {
 func TestJoinUserBroadcast(t *testing.T) {
 	testUser1 := &user.UserMock{IdMock: "3d8b173a-b5a5-360a-a07a-582535995e13"}
 	testUser2 := &user.UserMock{IdMock: "0c2551b4-e653-3db7-b522-9195b41c9dab"}
-	channel1 := make(chan Room)
+	channel1 := make(chan Room, 100)
 	testRoomUser := &roomUser{u: testUser1, c: channel1}
 	cases := []struct {
 		beforeUsers []*roomUser
@@ -200,8 +200,8 @@ func TestJoinUserBroadcast(t *testing.T) {
 func TestLeaveUserBroadcast(t *testing.T) {
 	testUser1 := &user.UserMock{IdMock: "5bbe0676-86ad-342c-96c5-89c2dd688e15"}
 	testUser2 := &user.UserMock{IdMock: "0b058f2e-44ef-304f-a858-dd550182a93e"}
-	channel1 := make(chan Room)
-	channel2 := make(chan Room)
+	channel1 := make(chan Room, 100)
+	channel2 := make(chan Room, 100)
 	testRoomUser1 := &roomUser{u: testUser1, c: channel1}
 	testRoomUser2 := &roomUser{u: testUser2, c: channel2}
 	cases := []struct {
@@ -260,11 +260,9 @@ func TestRoomClose(t *testing.T) {
 		// can't compare as mutex state
 		assert.Equal(t, nil, room1)
 		assert.Equal(t, nil, room2)
-
 	}
-
 }
 
 func mockRoomUser(u user.User) *roomUser {
-	return &roomUser{u: u, c: make(chan Room)}
+	return &roomUser{u: u, c: make(chan Room, 100)}
 }

@@ -117,7 +117,7 @@ func (m *roomImpl) LeaveUser(outUser user.User) error {
 	if len(m.users) == 0 {
 		m.status = Close
 	} else {
-		go m.broadcast()
+		m.broadcast()
 	}
 
 	return nil
